@@ -19,7 +19,7 @@ the parameters of global
 global_classes = 5
 global_batch_size = 64
 global_training_iterations = 1000  # 训练迭代次数
-global_val_size = 100  # 每迭代100次打印一次log
+global_val_size = 200  # 每迭代100次打印一次log
 train_path = ''
 val_path = ''
 x_train, y_train = 0, 0
