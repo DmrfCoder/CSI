@@ -1,7 +1,9 @@
 # Net Strcture
 LSTM--->CNN-->FC-->Softmax
 ## LSTM
-Input dimension:time_1_180_2
+Input dimension:time_360
+
+one layer
 
 Units number:N=64
 
