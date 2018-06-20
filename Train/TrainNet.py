@@ -3,6 +3,7 @@ import tensorflow as tf
 import numpy as np
 from tensorflow.contrib import rnn
 from Net.CNN_Init import cnn_weight_variable, cnn_bias_variable, conv2d, max_pool_2x2
+from Util.ReadAndDecodeUtil import read_and_decode
 
 '''
 the parameters of LSTM
@@ -17,13 +18,18 @@ lstm_input_dimension = 360
 the parameters of global
 '''
 global_classes = 5
-global_batch_size = 64
-global_training_iterations = 1000  # 训练迭代次数
-global_val_size = 200  # 每迭代100次打印一次log
-train_path = ''
-val_path = ''
-x_train, y_train = 0, 0
-x_val, y_val = 0, 0
+train_path = '/home/dmrfcoder/Document/CSI/DataSet/new/fixed/traindatafixed.tfrecords'
+val_path = '/home/dmrfcoder/Document/CSI/DataSet/new/fixed/testdatafixed.tfrecords'
+pb_file_path = "../Model/CSI.pb"
+
+# 组合batch
+train_batch = 64
+test_batch = 32
+global_training_iterations = 100000  # 训练迭代次数
+steps_per_test = train_batch*2
+
+x_train, y_train = read_and_decode(train_path)
+x_val, y_val = read_and_decode(val_path)
 
 # the input shap of LSTM  = (batch_size, timestep_size, input_size)
 lstm_input = tf.placeholder(tf.float32, shape=[None, lstm_time_step * lstm_input_dimension], name='input_lstm')
@@ -54,11 +60,13 @@ def LSTM(x, weights, biases):
     # Unstack to get a list of 'timesteps' tensors of shape (batch_size, n_input)
     x = tf.reshape(x, [-1, lstm_time_step, lstm_input_dimension])
 
-    lstm_cell = rnn.BasicLSTMCell(num_units=lstm_hidden_units, forget_bias=1.0, state_is_tuple=True)
+    #lstm_cell = rnn.BasicLSTMCell(num_units=lstm_hidden_units, forget_bias=1.0, state_is_tuple=True)
+    lstm_cell = tf.nn.rnn_cell.BasicLSTMCell(num_units=lstm_hidden_units, forget_bias=1.0, state_is_tuple=True)
 
-    mlstm_cell = rnn.MultiRNNCell([lstm_cell] * lstm_layer_num, state_is_tuple=True)
+    #mlstm_cell = rnn.MultiRNNCell([lstm_cell] * lstm_layer_num, state_is_tuple=True)
+    mlstm_cell = tf.nn.rnn_cell.MultiRNNCell([lstm_cell] * lstm_layer_num, state_is_tuple=True)
 
-    init_state = mlstm_cell.zero_state(global_batch_size, dtype=tf.float32)
+    init_state = mlstm_cell.zero_state(train_batch, dtype=tf.float32)
 
     outputs, final_state = tf.nn.dynamic_rnn(mlstm_cell, inputs=x, initial_state=init_state, time_major=False)
 
@@ -88,11 +96,10 @@ def CNN(in_x):
     w_conv2 = cnn_weight_variable([5, 3, 6, 10])
     b_conv2 = cnn_bias_variable([10])
     h_conv2 = tf.nn.relu(conv2d(h_pool1, w_conv2, s=[3, 3, 1, 1]) + b_conv2)
-    h_pool2 = max_pool_2x2(h_conv2, k=[1, 1, 1, 1], s=[1, 1, 1, 1])
 
     w_fc1 = cnn_weight_variable([3200, 1000])
     b_fc1 = cnn_bias_variable([1000])
-    h_pool3_flat = tf.reshape(h_pool2, [-1, 3200])  # 将32*10*10reshape为3200*1
+    h_pool3_flat = tf.reshape(h_conv2, [-1, 3200])  # 将32*10*10reshape为3200*1
 
     h_fc1 = tf.nn.relu(tf.matmul(h_pool3_flat, w_fc1) + b_fc1)
 
@@ -109,7 +116,7 @@ def CNN(in_x):
     return out_y
 
 
-cnn_input = LSTM(lstm_input_dimension, lstm_weights, lstm_biases)
+cnn_input = LSTM(lstm_input, lstm_weights, lstm_biases)
 cnn_output = CNN(cnn_input)
 
 prediction_labels = tf.argmax(y, axis=1, name="output")
@@ -124,9 +131,7 @@ correct_prediction = tf.equal(tf.argmax(cnn_output, 1), y_label)
 
 accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
-# 组合batch
-train_batch = 1
-test_batch = 32
+
 
 min_after_dequeue_train = train_batch * 2
 min_after_dequeue_test = test_batch * 2
@@ -154,8 +159,11 @@ with tf.Session() as sess:
         train_x = np.reshape(train_x, (1, 360, 1, 1))
 
         sess.run(train, feed_dict={lstm_input: train_x, y_label: train_y})
+        if step % steps_per_test == 0:
+            print('Training Accuracy', step,
+                  sess.run(train, feed_dict={lstm_input: train_x, y_label: train_y}))
 
     constant_graph = tf.graph_util.convert_variables_to_constants(sess, sess.graph_def, ["output"])
 
-    with tf.gfile.FastGFile('../Model/CSI_Model.pb', mode='wb') as f:
+    with tf.gfile.FastGFile(pb_file_path, mode='wb') as f:
         f.write(constant_graph.SerializeToString())
