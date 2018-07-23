@@ -69,8 +69,8 @@ def LSTM(x, weights, biases):
     init_state = mlstm_cell.zero_state(train_batch, dtype=tf.float32)
 
     outputs, final_state = tf.nn.dynamic_rnn(mlstm_cell, inputs=x, initial_state=init_state, time_major=False)
-
-    outputs = tf.unstack(tf.transpose(outputs, [1, 0, 2]))
+    #outputs = tf.unstack(tf.transpose(outputs, [1, 0, 2]))
+    outputs = tf.unpack(tf.transpose(outputs, [1, 0, 2]))
 
     results = tf.matmul(outputs[-1], weights['out']) + biases['out']  # 选取最后一个 output
 
@@ -86,9 +86,10 @@ def CNN(in_x):
     # [filter_height, filter_width, in_channels, out_channels]
     w_conv1 = cnn_weight_variable([5, 5, 1, 6])
     b_conv1 = cnn_bias_variable([6])
-    h_conv1 = tf.nn.relu(conv2d(in_x, w_conv1, [1, 1, 1,
-                                                1]) + b_conv1)  # stride/kernel:The stride of the sliding window for each  dimension of `input`.
-
+    try:
+        h_conv1 = tf.nn.relu(conv2d(in_x, w_conv1, [1, 1, 1,1]) + b_conv1)  # stride/kernel:The stride of the sliding window for each  dimension of `input`.
+    except  ValueError:
+            print('error')
     h_pool1 = max_pool_2x2(h_conv1, [2, 2, 1, 1],
                            [2, 2, 1,
                             1])  # stride/kernel:The size of the window for each dimension of the input tensor.

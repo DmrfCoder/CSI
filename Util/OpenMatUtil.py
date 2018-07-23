@@ -2,7 +2,7 @@
 import scipy.io as scio
 import numpy as np
 
-data_path='/home/dmrfcoder/Document/CSI/DataSet/new/fixed/testdatafixed.mat'
+data_path='/home/dmrfcoder/Document/CSI/DataSet/new/fixed/eating/1/eating_1_2.mat'
 data = scio.loadmat(data_path)
 # print type(data)
 # print data
