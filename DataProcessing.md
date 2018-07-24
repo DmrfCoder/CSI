@@ -27,4 +27,8 @@ csi中的数据格式为a+bj即为复数,使用abs函数得到振幅(amplitude),
 
 - Smoothing
 
+使用中值滤波进行平滑处理(5-point median filter)
+
+
+
 
