@@ -47,9 +47,9 @@ DeepCount discards the first principal component h 1 and retains the next ten pr
 
 ## Monitor with Activity Recognition Model
 ...
-## Deep Learning Model Construction
+# Deep Learning Model Construction
 
-### Counting Model Preprocessing
+## Counting Model Preprocessing
 
 - Amplitude Noise Removal
 
