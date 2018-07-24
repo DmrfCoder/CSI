@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d17a4460-4ecb-4750-8f3c-b9fa5ce2012b" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/Data/CsiToAmplitudeAndPhase.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/WeightedMovingAverage.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Util/WriteListToMatFile.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -21,6 +20,7 @@
     <SUITE FILE_PATH="coverage/CSI$CsiToAmplitudeAndPhase.coverage" NAME="CsiToAmplitudeAndPhase Coverage Results" MODIFIED="1532434200385" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Data" />
     <SUITE FILE_PATH="coverage/CSI$TrainNet.coverage" NAME="TrainNet Coverage Results" MODIFIED="1529592783072" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Train" />
     <SUITE FILE_PATH="coverage/CSI$OpenTfRecordsUtil.coverage" NAME="OpenTfRecordsUtil Coverage Results" MODIFIED="1529512219079" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Util" />
+    <SUITE FILE_PATH="coverage/CSI$WriteListToTxtFile.coverage" NAME="WriteListToTxtFile Coverage Results" MODIFIED="1532441388113" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Util" />
   </component>
   <component name="DatabaseView">
     <option name="SHOW_INTERMEDIATE" value="true" />
@@ -50,14 +50,35 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CsiToAmplitudeAndPhase.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="OpenMatUtil.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Util/OpenMatUtil.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="24">
+              <caret line="1" selection-start-line="1" selection-end-line="1" selection-end-column="23" />
+              <folding>
+                <element signature="e#20#43#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CsiToAmplitudeAndPhase.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Data/CsiToAmplitudeAndPhase.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="552">
-              <caret line="23" column="25" lean-forward="true" selection-start-line="23" selection-start-column="25" selection-end-line="23" selection-end-column="25" />
+            <state relative-caret-position="114">
+              <caret line="24" column="43" lean-forward="true" selection-start-line="24" selection-start-column="3" selection-end-line="24" selection-end-column="43" />
               <folding>
                 <element signature="e#20#38#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="WriteListToMatFile.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Util/WriteListToMatFile.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="120">
+              <caret line="5" column="44" selection-start-line="5" selection-start-column="44" selection-end-line="5" selection-end-column="44" />
             </state>
           </provider>
         </entry>
@@ -92,6 +113,8 @@
         <option value="$PROJECT_DIR$/Data/FromCsiMatGetPlural.py" />
         <option value="$PROJECT_DIR$/Data/CsiToAmplitudeAndPhase.py" />
         <option value="$PROJECT_DIR$/Data/WeightedMovingAverage.py" />
+        <option value="$PROJECT_DIR$/Util/WriteListToTxtFile.py" />
+        <option value="$PROJECT_DIR$/Util/WriteListToMatFile.py" />
       </list>
     </option>
   </component>
@@ -132,6 +155,11 @@
             </path>
             <path>
               <item name="CSI" type="b2602c69:ProjectViewProjectNode" />
+              <item name="CSI" type="462c0819:PsiDirectoryNode" />
+              <item name="Util" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="CSI" type="b2602c69:ProjectViewProjectNode" />
               <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
             </path>
           </expand>
@@ -163,7 +191,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.OpenMatUtil">
+  <component name="RunManager" selected="Python.WriteListToTxtFile">
     <configuration name="CsiToAmplitudeAndPhase" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="CSI" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -240,7 +268,7 @@
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
     </configuration>
-    <configuration name="TrainNet" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="WriteListToTxtFile" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="CSI" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -248,12 +276,12 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Train" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Util" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Train/TrainNet.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Util/WriteListToMatFile.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -261,18 +289,18 @@
     </configuration>
     <list>
       <item itemvalue="Python.OpenMatUtil" />
-      <item itemvalue="Python.TrainNet" />
       <item itemvalue="Python.Draw" />
       <item itemvalue="Python.FromCsiMatGetPlural" />
       <item itemvalue="Python.CsiToAmplitudeAndPhase" />
+      <item itemvalue="Python.WriteListToTxtFile" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.WriteListToTxtFile" />
         <item itemvalue="Python.OpenMatUtil" />
         <item itemvalue="Python.CsiToAmplitudeAndPhase" />
         <item itemvalue="Python.FromCsiMatGetPlural" />
         <item itemvalue="Python.Draw" />
-        <item itemvalue="Python.TrainNet" />
       </list>
     </recent_temporary>
   </component>
@@ -298,7 +326,7 @@
       <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Python Console" order="7" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.26072606" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.21122113" />
       <window_info anchor="bottom" id="Terminal" order="7" weight="0.32700893" />
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.28323263" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
@@ -306,7 +334,7 @@
       <window_info anchor="right" id="SciView" order="3" weight="0.36253777" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info anchor="bottom" id="Debug" order="3" visible="true" weight="0.2310231" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.2310231" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -350,23 +378,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/Train/TrainNet.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1704">
-          <caret line="71" column="3" selection-start-line="71" selection-start-column="3" selection-end-line="71" selection-end-column="3" />
-          <folding>
-            <element signature="e#21#44#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/local/lib/python2.7/dist-packages/tensorflow/python/ops/array_ops.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="40848">
-          <caret line="1702" selection-start-line="1702" selection-end-line="1702" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Util/ReadAndDecodeUtil.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="120">
@@ -622,13 +633,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Util/ReadAndDecodeUtil.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="5" column="19" selection-start-line="5" selection-start-column="4" selection-end-line="5" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///usr/local/lib/python2.7/dist-packages/tensorflow/python/ops/array_ops.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="40368">
@@ -708,23 +712,44 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Util/demo.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="3" column="2" lean-forward="true" selection-start-line="3" selection-start-column="2" selection-end-line="3" selection-end-column="2" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Util/ReadAndDecodeUtil.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="48">
+          <caret line="2" lean-forward="true" selection-start-line="2" selection-end-line="2" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Data/CsiToAmplitudeAndPhase.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="114">
+          <caret line="24" column="43" lean-forward="true" selection-start-line="24" selection-start-column="3" selection-end-line="24" selection-end-column="43" />
+          <folding>
+            <element signature="e#20#38#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Util/OpenMatUtil.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="15" lean-forward="true" selection-start-line="15" selection-end-line="15" />
+        <state relative-caret-position="24">
+          <caret line="1" selection-start-line="1" selection-end-line="1" selection-end-column="23" />
           <folding>
             <element signature="e#20#43#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Data/CsiToAmplitudeAndPhase.py">
+    <entry file="file://$PROJECT_DIR$/Util/WriteListToMatFile.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="552">
-          <caret line="23" column="25" lean-forward="true" selection-start-line="23" selection-start-column="25" selection-end-line="23" selection-end-column="25" />
-          <folding>
-            <element signature="e#20#38#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="120">
+          <caret line="5" column="44" selection-start-line="5" selection-start-column="44" selection-end-line="5" selection-end-column="44" />
         </state>
       </provider>
     </entry>
