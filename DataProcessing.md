@@ -56,7 +56,8 @@ DeepCount discards the first principal component h 1 and retains the next ten pr
 使用加权平均算法对振幅进行降噪,m设置为100
 
 - Phase Sanitization
-...
+
+首先对原始phase数据(180--->6*30) unwrap,然后计算出every subcarrier的均值y,利用y和x:[0:Sub-1]进行线性拟合(linear fit),最终算出calibrated phase value 并返回.
 
 ### Offline Training
 
