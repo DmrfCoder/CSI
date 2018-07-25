@@ -31,7 +31,7 @@ def getAmplitudesAndPhases(Csi_Mat_Path):  # N为对应180的数量
     return (amplitudes, phases)
 
 
-if __name__=='__main__':
-    path='/home/dmrfcoder/Document/CSI/DataSet/new/fixed/eating/1/eating_1_2.mat'
-    c=getAmplitudesAndPhases(path)
+if __name__ == '__main__':
+    path = '/home/dmrfcoder/Document/CSI/DataSet/new/fixed/eating/1/eating_1_2.mat'
+    c = getAmplitudesAndPhases(path)
     print(0)
