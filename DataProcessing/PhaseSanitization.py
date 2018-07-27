@@ -5,7 +5,7 @@ import numpy as np
 Input:
     raw phase :PM(180--->6*30)
     number of subcarriersn :Sub(30)
-    number of Tx-Rx pairs:M(30)
+    number of Tx-Rx pairs:M(6)
     
 Output:
     calibrated phase values:PC
