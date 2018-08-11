@@ -50,6 +50,4 @@ def PhaseSanitization(pm, sub=30, m=6):
     return pc
 
 
-a = np.random.random((30, 6))
 
-PhaseSanitization(a)
