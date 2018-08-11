@@ -31,8 +31,7 @@ def PhaseSanitization(pm, sub=30, m=6):
     plotPhase(data=pm[:, 0], name='raw_wrapped_csi_phase')
 
     for i in range(0, m):
-        a = np.unwrap(pm[:, i])
-        Up = np.unwrap(a)
+        pm[:, i] = np.unwrap(pm[:, i])
 
     plotPhase(data=pm[:, 0], name='Unwrapped_csi_phase')
 
