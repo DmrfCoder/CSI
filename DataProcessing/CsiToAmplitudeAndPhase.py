@@ -12,6 +12,7 @@ import scipy.io as scio
 '''
 
 
+
 def getAmplitudesAndPhases(Csi_Mat_Path):  # N为对应180的数量
 
     data = scio.loadmat(Csi_Mat_Path)
@@ -21,23 +22,19 @@ def getAmplitudesAndPhases(Csi_Mat_Path):  # N为对应180的数量
     '''
     设置N为10方便调试
     '''
-    N=1
-
+    N = 4500
 
     """
     根据复数计算振幅和相位
     """
-    amplitudes = [([] * 180) for i in range(N)]
-    phases = [([] * 180) for i in range(N)]
+    amplitudes = np.ndarray(shape=(N, 30, 6))
+    phases = np.ndarray(shape=(N, 30, 6))
+
     for m in range(N):
-        for i in range(180):
-            r = sqrt((csi_data[m][i].real) ** 2 + (csi_data[m][i].imag) ** 2)
-            amplitudes[m].append(r)
-            phases[m].append(np.angle(csi_data[m][i]))
-    return (amplitudes, phases)
+        for i in range(0, 6):
+            for j in range(0, 30):
+                index = j + i * 30
+                amplitudes[m][j][i] = sqrt(csi_data[m][index].real ** 2 + csi_data[m][index].imag ** 2)
+                phases[m][j][i] = np.angle(csi_data[m][index])
 
-
-
-
-
-
+    return amplitudes, phases,N

@@ -1,6 +1,7 @@
 # -*-coding:utf-8-*-
 import numpy as np
 import matplotlib.pyplot as plt
+
 '''
 Input:
     raw phase :PM(180--->6*30)
@@ -16,35 +17,40 @@ Algorithm:
 '''
 
 
-def PhaseSanitization(PM, Sub, M):
-    for i in range(0, M):
-        Up = np.unwrap(PM[i,:])
+def plotPhase(data, name, xlable='', ylable=''):
+    plt.plot(data)
 
-    plt.plot(PM[0,:], color='green', label='Antenna1')
-    plt.plot(PM[1,:], color='red', label='Antenna2')
-    plt.plot(PM[2,:], color='skyblue', label='Antenna3')
+    plt.xlabel(xlable)
+    plt.ylabel(ylable)
 
-
-
-    plt.xlabel('Subcarrier')
-    plt.ylabel('Unwrapped Phase')
-
-    plt.savefig('../EResult/Unwrapped_csi_phase.png')
+    plt.savefig('../EResult/' + name + '.png')
     plt.close()
 
 
+def PhaseSanitization(pm, sub=30, m=6):
+    plotPhase(data=pm[:, 0], name='raw_wrapped_csi_phase')
+
+    for i in range(0, m):
+        a = np.unwrap(pm[:, i])
+        Up = np.unwrap(a)
+
+    plotPhase(data=pm[:, 0], name='Unwrapped_csi_phase')
+
+    y = np.mean(pm, 1)
+    pc = np.ndarray(shape=(30, 6))
+
+    x = range(0, sub)
+    p = np.polyfit(x, y, 1)
+    yf = [p[0] * tx for tx in x]
+
+    for t in range(0, m):
+        for s in range(0, 30):
+            pc[s][t] = pm[s][t] - yf[s]
+
+    plotPhase(data=pc[:, 0], name='Modified_csi_phase')
+    return pc
 
 
-    y = np.mean(PM, 0)
-    PC = np.ndarray(shape=(6, 30))
+a = np.random.random((30, 6))
 
-    for i in range(0, Sub):
-        x = range(0, Sub)
-        p = np.polyfit(x, y, 1)
-        yf = [p[0]*tx for tx in x]
-        for j in range(0, M):
-            PC[j, :]= list(map(lambda x: x[0] - x[1], zip(PM[j,:],  yf)))
-
-    return PC
-
-
+PhaseSanitization(a)
