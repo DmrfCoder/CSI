@@ -23,21 +23,16 @@ def plotAmplitudes(data, name, xlable='', ylable=''):
 
 
 def weightMoveAverage(amplitude, N, m=100):  # N为Amplitude的长度
-    m_item_sum = mItemSum(m)
     plotAmplitudes(amplitude[:, 29, 0], 'Raw_data_after_pca')
+    m_item_sum = mItemSum(m)
 
     for a in range(0, 30):
         for t in range(0, 6):
-            for n in range(m - 1, N):
-                sum_amplitude = 0
-                jUpIndex = n
-                jLowIndex = n - m + 1
-                for j in range(jLowIndex, jUpIndex):  # t-m+1~t,因为range右边为开,所以+1
-                    sum_amplitude = sum_amplitude + amplitude[j][a][t] * (j - jLowIndex + 1)
-
-                amplitude[n][a][t] = sum_amplitude / m_item_sum
+            ass = amplitude[:, a, t]
+            amplitude[:, a, t] = demo(ass, m, N, m_item_sum)
 
     plotAmplitudes(amplitude[:, 29, 0], 'Raw_data_after_pca2')
+    print('success')
     return amplitude
 
 
@@ -48,6 +43,16 @@ def mItemSum(m):
     return m_item_sum
 
 
-a = np.random.random((1000, 30, 6))
+def demo(ass, m, N, m_item_sum):
+    for n in range(m - 1, N):
+        sum = 0
+        x = ass[n - m + 1:n + 1]
+        y = range(1, m + 1)
+        for a, b in zip(x, y):
+            sum += a * b
+        ass[n] = sum / m_item_sum
+    return ass
 
-weightMoveAverage(a, 1000)
+
+a = np.random.random(size=[2000, 30, 6])
+b = weightMoveAverage(a, 2000)
