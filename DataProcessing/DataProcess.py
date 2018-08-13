@@ -34,8 +34,9 @@ def DataProcessing(Csi_Mat_Path):
 
     for k in range(0, N):
         phases[k] = PhaseSanitization(phases[k], 30, 6)
+        break
 
-    return amplitudes, phases
+    return amplitudes, phases, N
     # amplitudes和amplitudes的维度都是n*180，现在将其写为n*360即可，但是要注意打上label
 
 
@@ -83,7 +84,7 @@ def dataProcessOfFiles(path, targetpath):  # path:.../new targetpath:../demo.tfr
                     N = result[2]
                     label = l
                     for n in range(0, N):
-                        data_raw = a[n] + p[n]
+                        data_raw = a[n].reshape(-1) + p[n].reshape(-1)
                         data_bytes = data_raw.tostring()
                         example = tf.train.Example(features=tf.train.Features(feature={
                             'label': _int64_feature(label),
@@ -99,5 +100,5 @@ def dataProcessOfFiles(path, targetpath):  # path:.../new targetpath:../demo.tfr
 if __name__ == '__main__':
     path = '../new'
     tf_path = '../Data/csi_data.tfrecords'
-    mat_path = ''
-    DataProcessing(mat_path)
+    mat_path = '/Users/dmrfcoder/Documents/eating/1/eating_1_1.mat'
+    #DataProcessing(mat_path)

@@ -22,7 +22,7 @@ def getAmplitudesAndPhases(Csi_Mat_Path):  # N为对应180的数量
     '''
     设置N为10方便调试
     '''
-    N = 4500
+    #N = 30000
 
     """
     根据复数计算振幅和相位
