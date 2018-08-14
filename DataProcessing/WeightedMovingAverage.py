@@ -23,7 +23,7 @@ def plotAmplitudes(data, name, xlable='', ylable=''):
 
 
 def weightMoveAverage(amplitude, N, m=100):  # N为Amplitude的长度
-    plotAmplitudes(amplitude[:, 0, 0], 'Raw_data_after_pca')
+
     m_item_sum = mItemSum(m)
 
     for a in range(0, 30):
@@ -33,8 +33,8 @@ def weightMoveAverage(amplitude, N, m=100):  # N为Amplitude的长度
             break
         break
 
-    plotAmplitudes(amplitude[:, 0, 0], 'Raw_data_after_pca2')
-    print('success')
+
+
     return amplitude
 
 

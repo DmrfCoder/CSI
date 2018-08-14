@@ -28,12 +28,10 @@ def plotPhase(data, name, xlable='', ylable=''):
 
 
 def PhaseSanitization(pm, sub=30, m=6):
-    plotPhase(data=pm[:, 0], name='raw_wrapped_csi_phase')
 
     for i in range(0, m):
         pm[:, i] = np.unwrap(pm[:, i])
 
-    plotPhase(data=pm[:, 0], name='Unwrapped_csi_phase')
 
     y = np.mean(pm, 1)
     pc = np.ndarray(shape=(30, 6))
@@ -46,10 +44,7 @@ def PhaseSanitization(pm, sub=30, m=6):
         for s in range(0, 30):
             pc[s][t] = pm[s][t] - yf[s]
 
-    plotPhase(data=pc[:, 0], name='Modified_csi_phase')
     return pc
 
 
-a = np.random.random((30, 6))
 
-PhaseSanitization(a)
