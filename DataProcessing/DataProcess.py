@@ -1,6 +1,6 @@
 # -*-coding:utf-8-*-
 import os
-
+import scipy.io as scio
 from matplotlib.ticker import MultipleLocator
 
 import numpy as np
@@ -102,3 +102,10 @@ if __name__ == '__main__':
     tf_path = '../Data/csi_data.tfrecords'
     mat_path = '/Users/dmrfcoder/Documents/eating/1/eating_1_1.mat'
     #DataProcessing(mat_path)
+    # a=np.random.random(size=[2,30,6])
+    # b=np.random.random(size=[2,30,6])
+    # c= np.concatenate((a[0].reshape(-1),b[0].reshape(-1)),axis=0)
+    # print(c)
+
+
+
