@@ -1,0 +1,4 @@
+model_checkpoint_path: "csi.ckpt-1356"
+all_model_checkpoint_paths: "csi.ckpt-1149"
+all_model_checkpoint_paths: "csi.ckpt-1334"
+all_model_checkpoint_paths: "csi.ckpt-1356"

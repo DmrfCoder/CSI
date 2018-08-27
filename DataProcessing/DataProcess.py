@@ -1,6 +1,7 @@
 # -*-coding:utf-8-*-
 import os
 from threading import Thread
+import scipy.io as scio
 
 from matplotlib.ticker import MultipleLocator
 
@@ -50,10 +51,11 @@ def _int64_feature(value):
 def _bytes_feature(value):
     return tf.train.Feature(bytes_list=tf.train.BytesList(value=[value]))
 
+t=1
 
 def dataProcessOfFixedFiles(path, targetpath):  # path:.../new targetpath:../demo.tfrecords
 
-    writer = tf.python_io.TFRecordWriter(targetpath)
+#    writer = tf.python_io.TFRecordWriter(targetpath)
 
     files1 = os.listdir(path)
 
@@ -79,27 +81,22 @@ def dataProcessOfFixedFiles(path, targetpath):  # path:.../new targetpath:../dem
                     print('dataProcessOfFixedFiles'+str(a) + ' ' + str(b) + ' ' + str(c) + ' ' + str(d))
                     # f4:1_1.mat 2_2.mat...
                     result = DataProcessing(path +  '\\' + f2 + '\\' + f3 + '\\' + f4)
+
                     ap = result[0]
                     p = result[1]
                     N = result[2]
-                    label = l
-                    for n in range(0, N):
-                        data_raw = ap[n].reshape(-1) + p[n].reshape(-1)
-                        data_bytes = data_raw.tostring()
-                        example = tf.train.Example(features=tf.train.Features(feature={
-                            'label': _int64_feature(label),
-                            'data_raw': _bytes_feature(data_bytes)
-                        }))
+                    label = [l]*N
 
-                        writer.write(example.SerializeToString())
-    writer.close()
+                    scio.savemat(targetpath+ f2 + '-' + f3 + '-' + f4,
+                                 {'x': np.concatenate((ap.reshape(N,-1),p.reshape(N,-1)),axis=1), 'y':label})
+
     print('success:'+path)
 
 
 
 def dataProcessOfOpenAndSemiFiles(path, targetpath):  # path:.../new targetpath:../demo.tfrecords
 
-    writer = tf.python_io.TFRecordWriter(targetpath)
+    #writer = tf.python_io.TFRecordWriter(targetpath)
 
 
     a = -1
@@ -124,19 +121,12 @@ def dataProcessOfOpenAndSemiFiles(path, targetpath):  # path:.../new targetpath:
                 ap = result[0]
                 p = result[1]
                 N = result[2]
-                label = l
-                for n in range(0, N):
-                    data_raw = ap[n].reshape(-1) + p[n].reshape(-1)
-                    data_bytes = data_raw.tostring()
-                    example = tf.train.Example(features=tf.train.Features(feature={
-                        'label': _int64_feature(label),
-                        'data_raw': _bytes_feature(data_bytes)
-                    }))
+                label = [l]*N
 
-                    writer.write(example.SerializeToString())
+                scio.savemat(targetpath  + f3 + '-' + f4,
+                             {'x': np.concatenate((ap.reshape(N, -1), p.reshape(N, -1)), axis=1), 'y': label})
 
 
-    writer.close()
     print('success:'+path)
 
 
@@ -149,22 +139,22 @@ if __name__ == '__main__':
 
 
     fix_path='E:\\yczhao Data\\new\\fixed'
-    fix_target_path='E:\\yczhao Data\\fixed.tfrecords'
+    fix_target_path='E:\\yczhao Data\\new-2-mat\\'
     #dataProcessOfFixedFiles(fix_path,fix_target_path)
 
 
     open_path='E:\\yczhao Data\\new\\open'
-    open_target_path = 'E:\\yczhao Data\\open.tfrecords'
+    open_target_path = 'E:\\yczhao Data\\new-2-mat1\\'
     #dataProcessOfOpenAndSemiFiles(open_path,open_target_path)
 
     semi_path='E:\\yczhao Data\\new\\semi'
-    semi_target_path='E:\\yczhao Data\\semi.tfrecords'
+    semi_target_path='E:\\yczhao Data\\new-2-mat2\\'
     #dataProcessOfOpenAndSemiFiles(semi_path,semi_target_path)
 
     threadsPool = [
                    Thread(target=dataProcessOfFixedFiles, args=(fix_path,fix_target_path)),
-                   Thread(target=dataProcessOfOpenAndSemiFiles, args=(open_path, open_target_path)),
-                    Thread(target=dataProcessOfOpenAndSemiFiles,args=(semi_path,semi_target_path))
+                  # Thread(target=dataProcessOfOpenAndSemiFiles, args=(open_path, open_target_path)),
+                   # Thread(target=dataProcessOfOpenAndSemiFiles,args=(semi_path,semi_target_path))
                    ]
     for thread in threadsPool:
         thread.start()

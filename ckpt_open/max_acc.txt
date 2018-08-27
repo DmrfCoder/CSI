@@ -1,0 +1,12 @@
+max_acc: 0.1875
+max_acc: 0.25
+max_acc: 0.3125
+max_acc: 0.4375
+max_acc: 0.5625
+max_acc: 0.625
+max_acc: 0.6875
+max_acc: 0.75
+max_acc: 0.8125
+max_acc: 0.875
+max_acc: 0.9375
+max_acc: 1.0

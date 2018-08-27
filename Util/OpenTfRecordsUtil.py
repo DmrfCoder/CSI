@@ -6,7 +6,7 @@ import numpy as np
 
 reader = tf.TFRecordReader()
 filename_queue = tf.train.string_input_producer(
-    ['/home/dmrfcoder/Document/CSI/DataSet/new/fixed/testdatafixed.tfrecords'])
+    ['E:\\yczhao Data\\open.tfrecords'])
 _, serialized_example = reader.read(filename_queue)
 
 # 解析读取的样例。
@@ -32,7 +32,8 @@ threads = tf.train.start_queue_runners(sess=sess, coord=coord)
 
 for i in range(1000):
     image, label = sess.run([images, labels])
+    print(label)
 
 
 
-    print label
+   # print label
