@@ -1,8 +1,12 @@
 # -*-coding:utf-8-*-
 import os
+<<<<<<< HEAD
 from threading import Thread
 import scipy.io as scio
 
+=======
+import scipy.io as scio
+>>>>>>> ca38e2faf428cfaa66bb64e10c3d32227dae4e03
 from matplotlib.ticker import MultipleLocator
 
 import numpy as np
@@ -136,6 +140,7 @@ if __name__ == '__main__':
     path = '../new'
     tf_path = '../Data/csi_data.tfrecords'
     mat_path = '/Users/dmrfcoder/Documents/eating/1/eating_1_1.mat'
+<<<<<<< HEAD
 
 
     fix_path='E:\\yczhao Data\\new\\fixed'
@@ -162,6 +167,13 @@ if __name__ == '__main__':
     for thread in threadsPool:
         thread.join()
 
+=======
+    #DataProcessing(mat_path)
+    # a=np.random.random(size=[2,30,6])
+    # b=np.random.random(size=[2,30,6])
+    # c= np.concatenate((a[0].reshape(-1),b[0].reshape(-1)),axis=0)
+    # print(c)
+>>>>>>> ca38e2faf428cfaa66bb64e10c3d32227dae4e03
 
 
 
