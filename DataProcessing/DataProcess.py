@@ -1,6 +1,9 @@
 # -*-coding:utf-8-*-
 import os
+
+from threading import Thread
 import scipy.io as scio
+
 from matplotlib.ticker import MultipleLocator
 
 import numpy as np
@@ -49,10 +52,11 @@ def _int64_feature(value):
 def _bytes_feature(value):
     return tf.train.Feature(bytes_list=tf.train.BytesList(value=[value]))
 
+t=1
 
-def dataProcessOfFiles(path, targetpath):  # path:.../new targetpath:../demo.tfrecords
+def dataProcessOfFixedFiles(path, targetpath):  # path:.../new targetpath:../demo.tfrecords
 
-    writer = tf.python_io.TFRecordWriter(targetpath)
+#    writer = tf.python_io.TFRecordWriter(targetpath)
 
     files1 = os.listdir(path)
 
@@ -61,51 +65,106 @@ def dataProcessOfFiles(path, targetpath):  # path:.../new targetpath:../demo.tfr
     c = -1
     d = -1
 
-    for f1 in files1:
-        a = a + 1
-        # f1:fixed open semi
-        files2 = os.listdir(path + '/' + f1)
-        for f2 in files2:
-            b = b + 1
-            # f2:eatting settig ...
-            files3 = os.listdir(path + '/' + f1 + '/' + f2)
-            for f3 in files3:
-                c = c + 1
-                # f3:1 2 3...
-                l = int(f3) - 1
-                files4 = os.listdir(path + '/' + f1 + '/' + f2 + '/' + f3)
-                for f4 in files4:
+
+    files2 = os.listdir(path)
+    for f2 in files2:
+        b = b + 1
+        # f2:eatting settig ...
+        files3 = os.listdir(path +  '\\' + f2)
+        for f3 in files3:
+            c = c + 1
+            # f3:1 2 3...
+            l = int(f3) - 1
+            files4 = os.listdir(path +'\\'+ f2 + '\\' + f3)
+            for f4 in files4:
+                if '.mat' in f4:
                     d = d + 1
-                    print(str(a) + ' ' + str(b) + ' ' + str(c) + ' ' + str(d))
+                    print('dataProcessOfFixedFiles'+str(a) + ' ' + str(b) + ' ' + str(c) + ' ' + str(d))
                     # f4:1_1.mat 2_2.mat...
-                    result = DataProcessing(path + '/' + f1 + '/' + f2 + '/' + f3 + '/' + f4)
-                    a = result[0]
+                    result = DataProcessing(path +  '\\' + f2 + '\\' + f3 + '\\' + f4)
+
+                    ap = result[0]
                     p = result[1]
                     N = result[2]
-                    label = l
-                    for n in range(0, N):
-                        data_raw = a[n].reshape(-1) + p[n].reshape(-1)
-                        data_bytes = data_raw.tostring()
-                        example = tf.train.Example(features=tf.train.Features(feature={
-                            'label': _int64_feature(label),
-                            'data_raw': _bytes_feature(data_bytes)
-                        }))
+                    label = [l]*N
 
-                        writer.write(example.SerializeToString())
+                    scio.savemat(targetpath+ f2 + '-' + f3 + '-' + f4,
+                                 {'x': np.concatenate((ap.reshape(N,-1),p.reshape(N,-1)),axis=1), 'y':label})
 
-    writer.close()
-    print('success')
+    print('success:'+path)
+
+
+
+def dataProcessOfOpenAndSemiFiles(path, targetpath):  # path:.../new targetpath:../demo.tfrecords
+
+    #writer = tf.python_io.TFRecordWriter(targetpath)
+
+
+    a = -1
+    b = -1
+    c = -1
+    d = -1
+
+
+    files3 = os.listdir(path)
+
+    for f3 in files3:
+        c = c + 1
+        # f3:1 2 3...
+        l = int(f3) - 1
+        files4 = os.listdir(path +  '\\' + f3)
+        for f4 in files4:
+            if '.mat' in f4:
+                d = d + 1
+                print('dataProcessOfOpenAndSemiFiles'+path+' '+str(a) + ' ' + str(b) + ' ' + str(c) + ' ' + str(d))
+                # f4:1_1.mat 2_2.mat...
+                result = DataProcessing(path+ '\\' + f3 + '\\' + f4)
+                ap = result[0]
+                p = result[1]
+                N = result[2]
+                label = [l]*N
+
+                scio.savemat(targetpath  + f3 + '-' + f4,
+                             {'x': np.concatenate((ap.reshape(N, -1), p.reshape(N, -1)), axis=1), 'y': label})
+
+
+    print('success:'+path)
+
+
 
 
 if __name__ == '__main__':
     path = '../new'
     tf_path = '../Data/csi_data.tfrecords'
     mat_path = '/Users/dmrfcoder/Documents/eating/1/eating_1_1.mat'
-    #DataProcessing(mat_path)
-    # a=np.random.random(size=[2,30,6])
-    # b=np.random.random(size=[2,30,6])
-    # c= np.concatenate((a[0].reshape(-1),b[0].reshape(-1)),axis=0)
-    # print(c)
+
+
+
+    fix_path='E:\\yczhao Data\\new\\fixed'
+    fix_target_path='E:\\yczhao Data\\new-2-mat\\'
+    #dataProcessOfFixedFiles(fix_path,fix_target_path)
+
+
+    open_path='E:\\yczhao Data\\new\\open'
+    open_target_path = 'E:\\yczhao Data\\new-2-mat1\\'
+    #dataProcessOfOpenAndSemiFiles(open_path,open_target_path)
+
+    semi_path='E:\\yczhao Data\\new\\semi'
+    semi_target_path='E:\\yczhao Data\\new-2-mat2\\'
+    #dataProcessOfOpenAndSemiFiles(semi_path,semi_target_path)
+
+    threadsPool = [
+                   Thread(target=dataProcessOfFixedFiles, args=(fix_path,fix_target_path)),
+                  # Thread(target=dataProcessOfOpenAndSemiFiles, args=(open_path, open_target_path)),
+                   # Thread(target=dataProcessOfOpenAndSemiFiles,args=(semi_path,semi_target_path))
+                   ]
+    for thread in threadsPool:
+        thread.start()
+
+    for thread in threadsPool:
+        thread.join()
+
+
 
 
 

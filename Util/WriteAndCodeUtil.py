@@ -1,4 +1,6 @@
 # -*_coding:utf-8-*-
+import os
+
 import scipy.io as scio
 import tensorflow as tf
 import numpy as np
@@ -13,36 +15,61 @@ def _int64_feature(value):
 def _bytes_feature(value):
     return tf.train.Feature(bytes_list=tf.train.BytesList(value=[value]))
 
+list_x=[]
+list_y=[]
 
-def DoConvert(path_mat, path_tfrecords,key_x,key_y):
-    writer = tf.python_io.TFRecordWriter(path_tfrecords)
-    mat_data = scio.loadmat(path_mat)
-    x = mat_data[key_x]
-    y = mat_data[key_y]
-    item_count = y.shape[0]
-    '''
-    一共有item_count数量的数据,x的数据类型为float64,每一个x的维度为1*360
-    已经归一化处理过
-    '''
+list_x_val=[]
+list_y_val=[]
 
-    for i in range(0, item_count):
-        data_raw = x[i]
-        label = np.where(y[i] == 1)[0][0]
-        data_bytes=data_raw.tostring()
-        example = tf.train.Example(features=tf.train.Features(feature={
-            'label': _int64_feature(label),
-            'data_raw': _bytes_feature(data_bytes)
-        }))
-        print('doing:' + str(i)+' label:'+str(label))
-        writer.write(example.SerializeToString())
-    writer.close()
+
+def DoConvert(path_mat,new_path_mat,slice_len=200):
+
+
+
+
+    files1=os.listdir(path_mat)
+
+    for f1 in files1:
+        mat_data = scio.loadmat(path_mat+'\\'+f1)
+        x = mat_data['x']
+        y =mat_data['y']
+        label=y[0][0]
+        item_count = y.shape[1]
+        '''
+        一共有item_count数量的数据,x的数据类型为float64,每一个x的维度为1*360
+        已经归一化处理过
+        '''
+        item_count = int(item_count / slice_len)
+
+        new_x=[]
+        new_y=[]
+        new_x_val=[]
+        new_y_val=[]
+
+        for i in range(0, item_count):
+            data_raw = x[i * slice_len:(i + 1) * slice_len]
+            if i/item_count>=0.8:
+                print('doing_val:' + f1 + ' ' + str(i) + ' label:' + str(label))
+
+                new_x_val.append(data_raw)
+                new_y_val.append(label)
+
+            else:
+                print('doing:' + f1 + ' ' + str(i) + ' label:' + str(label))
+                new_x.append(data_raw)
+                new_y.append(label)
+
+        scio.savemat(new_path_mat+'\\'+f1,{'x':new_x, 'y': new_y})
+        scio.savemat(new_path_mat+'\\val_'+f1,{'x':new_x_val, 'y': new_y_val})
+
+
     print('success')
 
 
 
 if __name__ == '__main__':
-    path_mat='/home/dmrfcoder/Document/CSI/DataSet/new/fixed/traindatafixed.mat'
-    path_tfrecords='/home/dmrfcoder/Document/CSI/DataSet/new/fixed/traindatafixed.tfrecords'
-    key_x='train_x'
-    key_y='train_y'
-    DoConvert(path_mat,path_tfrecords,key_x,key_y)
+    path_mat='F:\\csi\\open'
+    new_path_mat='F:\\csi\\open2'
+
+
+    DoConvert(path_mat,new_path_mat )
