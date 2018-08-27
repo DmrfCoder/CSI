@@ -20,6 +20,23 @@ def Draw(path):
     plt.show()
 
 
+classes=5
+def expend_y(labels):
+    one_hot_index = np.arange(len(labels)) * classes + labels
+
+    one_hot = np.zeros((len(labels), classes))
+    one_hot.flat[one_hot_index] = 1
+
+    return one_hot
+
+
+
+
 if __name__ == '__main__':
     path = '/home/dmrfcoder/Document/CSI/DataSet/new/fixed/eating/1/eating_1.mat'
-    Draw(path)
+    #Draw(path)
+    la = [1, 2, 0, 3, 4]
+    la = np.reshape(la, 5, 1)
+
+    b = expend_y(la)
+    print(b)
