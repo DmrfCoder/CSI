@@ -21,6 +21,9 @@ valIterations = 1000
 
 baseIr = 0.01
 
+valPerTrainIterations=4
+
+
 '''
 IO
 '''

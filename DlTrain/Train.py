@@ -8,7 +8,7 @@ from DlTrain.Data import Data
 from DlTrain.LSTM import LSTM
 from DlTrain.Parameters import lstmTimeStep, lstmInputDimension, baseIr, valIterations, trainHd5Path, \
     trainBatchSize, trainReallyTxtPath, logPath, trainingIterations, trainPredictionTxtPath, valHd5Path, valBatchSize, \
-    valPredictionTxtPath, valReallyTxtPath, pbPath, accuracyFilePath, maxAccuracyFilePath
+    valPredictionTxtPath, valReallyTxtPath, pbPath, accuracyFilePath, maxAccuracyFilePath, valPerTrainIterations
 
 lstmInput = tf.placeholder(tf.float32, shape=[None, lstmTimeStep * lstmInputDimension], name='inputLstm')
 Label = tf.placeholder(tf.int32, shape=[None, ], name='Label')
@@ -37,7 +37,7 @@ sess = tf.InteractiveSession()
 sess.run(tf.global_variables_initializer())
 
 
-isTestMode = True  # 是否是验证阶段
+isTestMode = False  # 是否是验证阶段
 isTestCode = False  # 是否是测试代码模式（产生随机数据）
 isWriteFlag = True  # 是否将label写入文件
 saver = tf.train.Saver(max_to_keep=1)
@@ -45,41 +45,23 @@ merged = tf.summary.merge_all()
 
 if not isTestMode:
 
-    if isWriteFlag:
-        trainPredictionTxtFile = open(trainPredictionTxtPath, 'wb')
-        trainReallyTxtFile = open(trainReallyTxtPath, 'wb')
-
-    accuracyFile = open(accuracyFilePath, 'w')
-    maxAccuracyFile = open(maxAccuracyFilePath, 'w')
-
     logWriter = tf.summary.FileWriter(logPath, sess.graph)
-    maxAccuracy = 0
 
-    data = Data(trainHd5Path, isTestCode)
+    trainData = Data(trainHd5Path, isTestCode)
+    valDdata = Data(valHd5Path, isTestCode)
 
     for step in range(trainingIterations + 1):
 
-        X, Y = data.getNextAutoShuffleBatch(trainBatchSize)
+        X, Y = trainData.getNextAutoShuffleBatch(trainBatchSize)
 
         sess.run(trainOp, feed_dict={lstmInput: X, Label: Y})
-        if isWriteFlag:
-            np.savetxt(trainReallyTxtFile, Y)
-            np.savetxt(trainPredictionTxtFile, sess.run(predictionLabels, feed_dict={lstmInput: X, Label: Y}))
-
-        TrainLoss, TrainAccuracy = sess.run([loss, Accuracy], feed_dict={lstmInput: X, Label: Y})
-        print('step:%d, trainLoss:%f, trainAccuracy:%f' % (step, TrainLoss, TrainAccuracy))
-
-        accuracyFile.write(str(step + 1) + ', trainAccuracy: ' + str(TrainAccuracy) + '\n')
-        if TrainAccuracy > maxAccuracy:
-            maxAccuracy = TrainAccuracy
-
-            maxAccuracyFile.write('maxAccuracy: ' + str(maxAccuracy) + '\n')
+        if step % valPerTrainIterations == 0:
+            valX, valY = valDdata.getNextAutoShuffleBatch(valBatchSize)
+            valLoss, valAccuracy = sess.run([loss, Accuracy], feed_dict={lstmInput: valX, Label: valY})
+            print('step:%d, trainLoss:%f, trainAccuracy:%f' % (step, valLoss, valAccuracy))
 
         summary, _ = sess.run([merged, trainOp], feed_dict={lstmInput: X, Label: Y})
         logWriter.add_summary(summary, step)
-
-    accuracyFile.close()
-    maxAccuracyFile.close()
 
     constant_graph = tf.graph_util.convert_variables_to_constants(sess, sess.graph_def, ["PredictionLabels"])
 
@@ -89,9 +71,6 @@ if not isTestMode:
     if not isTestCode:
         logWriter.close()
 
-    if isWriteFlag:
-        trainPredictionTxtFile.close()
-        trainReallyTxtFile.close()
 
 else:
     output_graph_def = tf.GraphDef()
