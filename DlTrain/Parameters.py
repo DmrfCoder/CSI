@@ -23,7 +23,8 @@ baseIr = 0.0001
 IO
 '''
 # Log path
-logPath = "../Log/"
+trainLogPath = "../Log/train/"
+valLogPath = "../Log/val/"
 pbPath='../Model/open.pb'
 
 
