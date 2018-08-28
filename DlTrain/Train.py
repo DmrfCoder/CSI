@@ -6,12 +6,12 @@ import numpy as np
 from DlTrain.CNN import CNN
 from DlTrain.Data import Data
 from DlTrain.LSTM import LSTM
-from DlTrain.Parameters import lstmTimeStep, lstmInputDimension, baseIr, ckptPath, valIterations, trainHd5Path, \
+from DlTrain.Parameters import lstmTimeStep, lstmInputDimension, baseIr, valIterations, trainHd5Path, \
     trainBatchSize, trainReallyTxtPath, logPath, trainingIterations, trainPredictionTxtPath, valHd5Path, valBatchSize, \
-    valPredictionTxtPath, valReallyTxtPath
+    valPredictionTxtPath, valReallyTxtPath, pbPath, accuracyFilePath, maxAccuracyFilePath
 
 lstmInput = tf.placeholder(tf.float32, shape=[None, lstmTimeStep * lstmInputDimension], name='inputLstm')
-Label = tf.placeholder(tf.int32, shape=[None, ])
+Label = tf.placeholder(tf.int32, shape=[None, ], name='Label')
 
 cnnInput = LSTM(lstmInput)
 cnnOutput = CNN(cnnInput)
@@ -25,7 +25,7 @@ with tf.name_scope('Loss'):
 
 trainOp = tf.train.GradientDescentOptimizer(learning_rate=baseIr).minimize(loss)
 
-predictionLabels = tf.cast(tf.argmax(cnnOutput, 1), tf.int32)
+predictionLabels = tf.cast(tf.argmax(cnnOutput, 1), tf.int32, name='PredictionLabels')
 
 correctPrediction = tf.equal(predictionLabels, Label)
 
@@ -36,7 +36,8 @@ with tf.name_scope('Accuracy'):
 sess = tf.InteractiveSession()
 sess.run(tf.global_variables_initializer())
 
-isTestMode = False  # 是否是验证阶段
+
+isTestMode = True  # 是否是验证阶段
 isTestCode = False  # 是否是测试代码模式（产生随机数据）
 isWriteFlag = True  # 是否将label写入文件
 saver = tf.train.Saver(max_to_keep=1)
@@ -48,8 +49,8 @@ if not isTestMode:
         trainPredictionTxtFile = open(trainPredictionTxtPath, 'wb')
         trainReallyTxtFile = open(trainReallyTxtPath, 'wb')
 
-    accuracyFile = open(ckptPath + 'Accuracy.txt', 'w')
-    maxAccuracyFile = open(ckptPath + 'maxAccuracy.txt', 'w')
+    accuracyFile = open(accuracyFilePath, 'w')
+    maxAccuracyFile = open(maxAccuracyFilePath, 'w')
 
     logWriter = tf.summary.FileWriter(logPath, sess.graph)
     maxAccuracy = 0
@@ -70,16 +71,20 @@ if not isTestMode:
 
         accuracyFile.write(str(step + 1) + ', trainAccuracy: ' + str(TrainAccuracy) + '\n')
         if TrainAccuracy > maxAccuracy:
-            maxAccuacy = TrainAccuracy
-            maxAccuracyFile.write('maxAccuracy: ' + str(maxAccuacy) + '\n')
+            maxAccuracy = TrainAccuracy
 
-            saver.save(sess, ckptPath + 'csi.ckpt', global_step=step + 1)
+            maxAccuracyFile.write('maxAccuracy: ' + str(maxAccuracy) + '\n')
 
         summary, _ = sess.run([merged, trainOp], feed_dict={lstmInput: X, Label: Y})
         logWriter.add_summary(summary, step)
 
     accuracyFile.close()
     maxAccuracyFile.close()
+
+    constant_graph = tf.graph_util.convert_variables_to_constants(sess, sess.graph_def, ["PredictionLabels"])
+
+    with tf.gfile.FastGFile(pbPath, mode='wb') as f:
+        f.write(constant_graph.SerializeToString())
 
     if not isTestCode:
         logWriter.close()
@@ -89,8 +94,21 @@ if not isTestMode:
         trainReallyTxtFile.close()
 
 else:
-    modelFile = tf.train.latest_checkpoint(ckptPath)
-    saver.restore(sess, modelFile)
+    output_graph_def = tf.GraphDef()
+    with open(pbPath, "rb") as f:
+        output_graph_def.ParseFromString(f.read())
+        _ = tf.import_graph_def(output_graph_def, name="")
+
+    valPbLstmInput = sess.graph.get_tensor_by_name("inputLstm:0")
+    print(valPbLstmInput)
+    valPbLabel = sess.graph.get_tensor_by_name("Label:0")
+    print(valPbLabel)
+    valPbPredictionLabels = sess.graph.get_tensor_by_name("PredictionLabels:0")
+    print(valPbPredictionLabels)
+
+    correctPbPrediction = tf.equal(valPbPredictionLabels, valPbLabel)
+
+    valPbAccuracy = tf.reduce_mean(tf.cast(correctPbPrediction, tf.float32))
 
     if isWriteFlag:
         valPredictionTxtFile = open(valPredictionTxtPath, 'wb')
@@ -101,12 +119,13 @@ else:
     for step in range(valIterations + 1):
         X, Y = data.getNextAutoShuffleBatch(valBatchSize)
 
-        valLoss, valAccuracy = sess.run([loss, Accuracy], feed_dict={lstmInput: X, Label: Y})
+        valAccuracy = sess.run(valPbAccuracy, feed_dict={valPbLstmInput: X, valPbLabel: Y})
         if isWriteFlag:
             np.savetxt(valReallyTxtFile, Y)
-            np.savetxt(valPredictionTxtFile, sess.run(predictionLabels, feed_dict={lstmInput: X, Label: Y}))
+            np.savetxt(valPredictionTxtFile,
+                       sess.run(valPbPredictionLabels, feed_dict={valPbLstmInput: X, valPbLabel: Y}))
 
-        print('valLoss:%f, valAccuracy:%f' % (valLoss, valAccuracy))
+        print('valAccuracy:%f' % (valAccuracy))
 
     if isWriteFlag:
         valPredictionTxtFile.close()

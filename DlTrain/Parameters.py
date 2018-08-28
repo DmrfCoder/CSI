@@ -14,8 +14,10 @@ classes = 5
 
 trainBatchSize = 16
 valBatchSize = trainBatchSize
+
 trainingIterations = 5000  # 训练迭代次数
 valIterations = 1000
+
 
 baseIr = 0.01
 
@@ -24,13 +26,16 @@ IO
 '''
 # Log path
 logPath = "../Log/"
-ckptPath = '../ckpt_open/'
+pbPath='../Model/open.pb'
 
-trainPredictionTxtPath = '../Data/trainPredictionLabel.txt'
-trainReallyTxtPath = '../Data/trainReallyLabel.txt'
 
-valPredictionTxtPath = '../Data/valPredictionLabel.txt'
-valReallyTxtPath = '../Data/valReallyLabel.txt'
+accuracyFilePath='../Data/Open/Accuracy.txt'
+maxAccuracyFilePath='../Data/Open/maxAccuracy.txt'
+trainPredictionTxtPath = '../Data/Open/trainPredictionLabel.txt'
+trainReallyTxtPath = '../Data/Open/trainReallyLabel.txt'
+
+valPredictionTxtPath = '../Data/Open/valPredictionLabel.txt'
+valReallyTxtPath = '../Data/Open/valReallyLabel.txt'
 
 trainHd5Path = 'F:\csi\openh5\\open_train.h5'
 valHd5Path = 'F:\csi\openh5\\open_val.h5'

@@ -11,8 +11,8 @@ label= [0, 1, 2, 3, 4]
 
 #y_true = np.loadtxt('../Data/pc_re_label.txt')
 #y_pred = np.loadtxt('../Data/pc_pr_label_tf.txt')
-a = np.loadtxt('../Data/train_re_label.txt')
-b = np.loadtxt('../Data/train_pr_label.txt')
+a = np.loadtxt('../Data/Open/valReallyLabel.txt')
+b = np.loadtxt('../Data/Open/valPredictionLabel.txt')
 
 
 y_true=a
@@ -60,5 +60,5 @@ plt.gcf().subplots_adjust(bottom=0.15)
 
 plot_confusion_matrix(cm_normalized, title='Normalized confusion matrix')
 # show confusion matrix
-plt.savefig('../Data/confusion_matrix_train.png', format='png')
+plt.savefig('../Data/confusion_matrix_val.png', format='png')
 plt.show()
