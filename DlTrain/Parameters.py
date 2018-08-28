@@ -14,10 +14,10 @@ classes = 5
 
 trainBatchSize = 16
 valBatchSize = trainBatchSize
-trainingIterations = 30000  # 训练迭代次数
-valIterations = 10000
+trainingIterations = 5000  # 训练迭代次数
+valIterations = 1000
 
-baseIr = 0.0001
+baseIr = 0.01
 
 '''
 IO
@@ -32,5 +32,5 @@ trainReallyTxtPath = '../Data/trainReallyLabel.txt'
 valPredictionTxtPath = '../Data/valPredictionLabel.txt'
 valReallyTxtPath = '../Data/valReallyLabel.txt'
 
-trainHd5Path = ''
-valHd5Path = ''
+trainHd5Path = 'F:\csi\openh5\\open_train.h5'
+valHd5Path = 'F:\csi\openh5\\open_val.h5'

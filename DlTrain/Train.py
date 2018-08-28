@@ -37,9 +37,9 @@ sess = tf.InteractiveSession()
 sess.run(tf.global_variables_initializer())
 
 isTestMode = False  # 是否是验证阶段
-isTestCode = True  # 是否是测试代码模式（产生随机数据）
+isTestCode = False  # 是否是测试代码模式（产生随机数据）
 isWriteFlag = True  # 是否将label写入文件
-saver = tf.train.Saver(max_to_keep=3)
+saver = tf.train.Saver(max_to_keep=1)
 merged = tf.summary.merge_all()
 
 if not isTestMode:

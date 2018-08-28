@@ -67,6 +67,9 @@ class Data:
             return X, Y
         else:
 
+            if len(self.indexList) < batch_size:
+                self.indexList = list(range(0, Data.dataLength))
+
             randomIndexes = random.sample(range(0, len(self.indexList)), batch_size)
             X = []
             Y = []
