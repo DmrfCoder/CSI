@@ -52,8 +52,13 @@ class Data:
 
             sortedIndexes = sorted(randomIndexes, reverse=True)
             # 如果还抛异常用可以手动捕捉一下跳过
+            indexlen=int(len(sortedIndexes)/2)
+            i=0
             for sortedIndex in sortedIndexes:
                 self.indexList.pop(sortedIndex)
+                i+=1
+                if i==indexlen:
+                    break
 
             X = np.reshape(X, newshape=(-1, 72000))
             Y = np.reshape(Y, newshape=(-1, 1))

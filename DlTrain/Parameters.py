@@ -15,11 +15,11 @@ classes = 5
 trainBatchSize = 16
 valBatchSize = trainBatchSize
 
-trainingIterations = 5000  # 训练迭代次数
+trainingIterations = 10000  # 训练迭代次数
 valIterations = 1000
 
 
-baseIr = 0.01
+baseIr = 0.001
 
 valPerTrainIterations=4
 
@@ -28,7 +28,8 @@ valPerTrainIterations=4
 IO
 '''
 # Log path
-logPath = "../Log/"
+trainLogPath = "../Log/train/"
+valLogPath = "../Log/val/"
 pbPath='../Model/open.pb'
 
 

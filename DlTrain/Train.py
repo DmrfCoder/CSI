@@ -7,8 +7,9 @@ from DlTrain.CNN import CNN
 from DlTrain.Data import Data
 from DlTrain.LSTM import LSTM
 from DlTrain.Parameters import lstmTimeStep, lstmInputDimension, baseIr, valIterations, trainHd5Path, \
-    trainBatchSize, trainReallyTxtPath, logPath, trainingIterations, trainPredictionTxtPath, valHd5Path, valBatchSize, \
-    valPredictionTxtPath, valReallyTxtPath, pbPath, accuracyFilePath, maxAccuracyFilePath, valPerTrainIterations
+    trainBatchSize, trainReallyTxtPath, trainingIterations, trainPredictionTxtPath, valHd5Path, valBatchSize, \
+    valPredictionTxtPath, valReallyTxtPath, pbPath, accuracyFilePath, maxAccuracyFilePath, valPerTrainIterations, \
+    trainLogPath, valLogPath
 
 lstmInput = tf.placeholder(tf.float32, shape=[None, lstmTimeStep * lstmInputDimension], name='inputLstm')
 Label = tf.placeholder(tf.int32, shape=[None, ], name='Label')
@@ -37,31 +38,36 @@ sess = tf.InteractiveSession()
 sess.run(tf.global_variables_initializer())
 
 
+
 isTestMode = False  # 是否是验证阶段
 isTestCode = False  # 是否是测试代码模式（产生随机数据）
+
 isWriteFlag = True  # 是否将label写入文件
 saver = tf.train.Saver(max_to_keep=1)
 merged = tf.summary.merge_all()
 
 if not isTestMode:
 
-    logWriter = tf.summary.FileWriter(logPath, sess.graph)
+    trainLogWriter = tf.summary.FileWriter(trainLogPath, sess.graph)
+    valLogWriter = tf.summary.FileWriter(valLogPath, sess.graph)
 
     trainData = Data(trainHd5Path, isTestCode)
     valDdata = Data(valHd5Path, isTestCode)
 
     for step in range(trainingIterations + 1):
 
-        X, Y = trainData.getNextAutoShuffleBatch(trainBatchSize)
+        X, Y = trainData.getNextManualShuffleBatch(trainBatchSize)
 
         sess.run(trainOp, feed_dict={lstmInput: X, Label: Y})
         if step % valPerTrainIterations == 0:
-            valX, valY = valDdata.getNextAutoShuffleBatch(valBatchSize)
+            valX, valY = valDdata.getNextManualShuffleBatch(valBatchSize)
             valLoss, valAccuracy = sess.run([loss, Accuracy], feed_dict={lstmInput: valX, Label: valY})
-            print('step:%d, trainLoss:%f, trainAccuracy:%f' % (step, valLoss, valAccuracy))
+            print('step:%d, valLoss:%f, valAccuracy:%f' % (step, valLoss, valAccuracy))
+            valSummary, _ = sess.run([merged, trainOp], feed_dict={lstmInput: X, Label: Y})
+            valLogWriter.add_summary(valSummary, step)
 
-        summary, _ = sess.run([merged, trainOp], feed_dict={lstmInput: X, Label: Y})
-        logWriter.add_summary(summary, step)
+        trainSummary, _ = sess.run([merged, trainOp], feed_dict={lstmInput: X, Label: Y})
+        trainLogWriter.add_summary(trainSummary, step)
 
     constant_graph = tf.graph_util.convert_variables_to_constants(sess, sess.graph_def, ["PredictionLabels"])
 
@@ -69,7 +75,8 @@ if not isTestMode:
         f.write(constant_graph.SerializeToString())
 
     if not isTestCode:
-        logWriter.close()
+        trainLogWriter.close()
+        valLogWriter.close()
 
 
 else:
