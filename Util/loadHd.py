@@ -3,6 +3,8 @@ import random
 import numpy as np
 import pandas as pd
 
+from Util.WriteHd5Util import write
+
 
 def convertY(y_list):
     yListLength = len(y_list)
@@ -19,13 +21,14 @@ class bean:
         self.y=y
 
 
-def load(path):
+def load(path,path2):
     f = pd.HDFStore(path, 'r')
 
     x=f['x'].values
     y=f['y'].values
     y=convertY(y)
-    final_x = np.reshape(x, (-1, 200, 360))
+    #final_x = np.reshape(x, (-1, 200, 360))
+    final_x = np.reshape(x, (-1,72000))
     l=len(y)
     data=[]
     for i in range(l):
@@ -33,8 +36,9 @@ def load(path):
         data.append(b)
 
     random.shuffle(data)
+    write(data,path2)
 
 
     return (final_x,y)
 
-load('F:\csi\openh5\\open_val.h5')
+load('F:\csi\openh5\\open_val.h5','F:\csi\openh5\\open_val_sf.h5')

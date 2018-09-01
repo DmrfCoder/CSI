@@ -1,19 +1,13 @@
 import pandas as pd
-
+import numpy as np
 
 def write(data, path):
     f = pd.HDFStore(path, 'a')
     l = len(data)
-    x = []
-    y = []
-    for i in range(l):
-        x.append(data[i].x)
-        y.append(data[i].y)
+    ndata=np.reshape(data,newshape=(-1,1))
 
-    xd = pd.DataFrame(x)
-    yd = pd.DataFrame(y)
-    f.append('x', xd)
-    f.append('y', yd)
+    pddata=pd.DataFrame(ndata)
+    f.append('data',pddata)
 
     f.close()
     print('success')

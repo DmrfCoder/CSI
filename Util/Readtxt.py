@@ -23,6 +23,7 @@ def read(path1,target):
 
 
 
+
         l=len(x)
         for i in  range(0,l):
             temp_x=x[i]
@@ -39,4 +40,4 @@ def read(path1,target):
 
     return (d1,d2)
 
-f=read('F:\\csi\\open2_val','F:\\csi\\open_val.h5')
+f=read('F:\\csi\\open2_val','F:\\csi\\open_val2.h5')
