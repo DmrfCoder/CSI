@@ -33,7 +33,7 @@ def NormalizeFiles(path, target_path):
 
 
 if __name__ == '__main__':
-    path = 'E:\\yczhao Data\\new-2-mat2'
-    target_path = 'F:\\csi\\new-2-mat2\\'
+    path = 'E:\\yczhao Data\\AfterDataProcessData\\fixed'
+    target_path = 'F:\\csi\\AfterNormalizeData\\fixed\\'
 
     NormalizeFiles(path, target_path)

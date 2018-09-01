@@ -71,6 +71,25 @@ DeepCount discards the first principal component h 1 and retains the next ten pr
 
 - Amplitude Noise Removal && Phase Sanitization 维度：n * 180+n  * 180（n*360）
 
+- 归一化
+
 - 切片：paper切片长度为200，但是现在做成可变长的，假设切片长度为m，因为m可变，所以我们不能在做数据的时候对其进行切片，而是应该在训练的时候动态控制其切片长度，思路：
 
-  > 数据集（tfrecords）中的长度都是n*360的，如果对某一个item切片直接送进去的话存在没有随机化的弊端，这他妈就要在切片训练的算法上想办法啊，emmm算了到时候再说
+  > 数据集（tfrecords）中的长度都是n*360的，如果对某一个item切片直接送进去的话存在没有随机化的弊端，要在切片训练的算法上想办法
+
+
+
+# 处理流程
+
+1：DataProcess
+
+> 使用weight moving等算法对原始数据进行处理，得到净数据
+
+2:Normalize
+
+> 对净数据进行归一化处理
+
+2: Split
+
+> 对归一化之后的数据进行切片,将切片后的数据进行shuffle存储成h5文件
+
