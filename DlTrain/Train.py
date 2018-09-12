@@ -106,7 +106,8 @@ if not isTestMode:
         trainSummary, _ = sess.run([merged, trainOp], feed_dict={lstmInput: X, Label: Y})
         trainLogWriter.add_summary(trainSummary, step)
 
-    constant_graph = tf.graph_util.convert_variables_to_constants(sess, sess.graph_def, ["PredictionLabels"])
+    constant_graph = tf.grap
+    h_util.convert_variables_to_constants(sess, sess.graph_def, ["PredictionLabels"])
 
     if not isTestCode:
         trainLogWriter.close()
