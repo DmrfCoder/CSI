@@ -11,8 +11,10 @@ label= [0, 1, 2, 3, 4]
 
 #y_true = np.loadtxt('../Data/pc_re_label.txt')
 #y_pred = np.loadtxt('../Data/pc_pr_label_tf.txt')
-a = np.loadtxt('../Data/Open/valReallyLabel.txt')
-b = np.loadtxt('../Data/Open/valPredictionLabel.txt')
+
+which='Open'
+a = np.loadtxt('../Data/' + which + '/valReallyLabel.txt')
+b = np.loadtxt('../Data/' + which + '/valPredictionLabel.txt')
 
 
 y_true=a

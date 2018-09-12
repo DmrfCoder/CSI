@@ -113,14 +113,12 @@ else:
 
     valPbLstmInput = sess.graph.get_tensor_by_name("inputLstm:0")
     print(valPbLstmInput)
+
     valPbLabel = sess.graph.get_tensor_by_name("Label:0")
     print(valPbLabel)
+
     valPbPredictionLabels = sess.graph.get_tensor_by_name("PredictionLabels:0")
     print(valPbPredictionLabels)
-
-    correctPbPrediction = tf.equal(valPbPredictionLabels, valPbLabel)
-
-    valPbAccuracy = tf.reduce_mean(tf.cast(correctPbPrediction, tf.float32))
 
     if isWriteFlag:
         valPredictionTxtFile = open(valPredictionTxtPath, 'wb')
@@ -131,16 +129,18 @@ else:
         valX, valY = sess.run([val_x_batch, val_y_batch])
         valX = np.reshape(valX, newshape=(-1, 72000))
 
-        valPbAccuracy = sess.run(valPbAccuracy, feed_dict={lstmInput: valX, Label: valY})
-        print('step:%d,  valAccuracy:%f' % (step, valPbAccuracy))
+        pb_out_labels = sess.run(valPbPredictionLabels, feed_dict={valPbLstmInput: valX, valPbLabel: valY})
+
+        print('step:%d' % step)
+        for i in range(valBatchSize):
+            print 'really:%d prediction:%d' % (valY[i], pb_out_labels[i])
 
         if isWriteFlag:
             np.savetxt(valReallyTxtFile, valY)
-            np.savetxt(valPredictionTxtFile,
-                       sess.run(valPbPredictionLabels, feed_dict={lstmInput: valX, Label: valY}))
+            np.savetxt(valPredictionTxtFile, pb_out_labels)
 
     if isWriteFlag:
         valPredictionTxtFile.close()
         valReallyTxtFile.close()
 
-sess.close()
+    sess.close()

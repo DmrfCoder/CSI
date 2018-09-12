@@ -1,5 +1,4 @@
-
-#coding:utf-8
+# coding:utf-8
 
 """
 LSTM
@@ -20,36 +19,30 @@ trainBatchSize = 64
 valBatchSize = trainBatchSize
 
 trainingIterations = 10000  # 训练迭代次数
-valIterations = 1000
-
-
+valIterations = 100
 
 baseIr = 0.1
 
-
-valPerTrainIterations=4
-
+valPerTrainIterations = 4
 
 '''
 IO
 '''
 # Log path
+which = "Semi"
 
-trainLogPath = "../Log/open/train/"
-valLogPath = "../Log/open/val/"
+trainLogPath = '../Log/' + which + '/train/'
+valLogPath = '../Log/' + which + '/val/'
 
-pbPath='../Model/open.pb'
+pbPath = '../Model/' + which + '.pb'
 
+accuracyFilePath = '../Data/' + which + '/Accuracy.txt'
+maxAccuracyFilePath = '../Data/' + which + '/maxAccuracy.txt'
+trainPredictionTxtPath = '../Data/' + which + '/trainPredictionLabel.txt'
+trainReallyTxtPath = '../Data/' + which + '/trainReallyLabel.txt'
 
-accuracyFilePath='../Data/Open/Accuracy.txt'
-maxAccuracyFilePath='../Data/Open/maxAccuracy.txt'
-trainPredictionTxtPath = '../Data/Open/trainPredictionLabel.txt'
-trainReallyTxtPath = '../Data/Open/trainReallyLabel.txt'
+valPredictionTxtPath = '../Data/' + which + '/valPredictionLabel.txt'
+valReallyTxtPath = '../Data/' + which + '/valReallyLabel.txt'
 
-valPredictionTxtPath = '../Data/Open/valPredictionLabel.txt'
-valReallyTxtPath = '../Data/Open/valReallyLabel.txt'
-
-
-train_tf_path = '/data/after-split200/fixed/train.tfrecords'
-val_tf_path = '/data/after-split200/fixed/val.tfrecords'
-
+train_tf_path = '/data/after-split200/' + which + '/train.tfrecords'
+val_tf_path = '/data/after-split200/' + which + '/val.tfrecords'
