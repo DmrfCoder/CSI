@@ -13,7 +13,6 @@ from DlTrain.Parameters import lstmTimeStep, lstmInputDimension, baseIr, valIter
     trainLogPath, valLogPath, val_tf_path, train_tf_path
 from Util.ReadAndDecodeUtil import read_and_decode
 
-
 lstmInput = tf.placeholder(tf.float32, shape=[None, lstmTimeStep * lstmInputDimension], name='inputLstm')
 Label = tf.placeholder(tf.int32, shape=[None, ], name='Label')
 
@@ -36,7 +35,6 @@ correctPrediction = tf.equal(predictionLabels, Label)
 with tf.name_scope('Accuracy'):
     Accuracy = tf.reduce_mean(tf.cast(correctPrediction, tf.float32))
     tf.summary.scalar('Accuracy', Accuracy)
-
 
 x_train, y_train = read_and_decode(train_tf_path)
 num_threads = 3
@@ -64,8 +62,7 @@ sess = tf.InteractiveSession()
 sess.run(tf.global_variables_initializer())
 threads = tf.train.start_queue_runners(sess=sess)
 
-
-isTestMode = False  # 是否是验证阶段
+isTestMode = True  # 是否是验证阶段
 isTestCode = False  # 是否是测试代码模式（产生随机数据）
 
 isWriteFlag = True  # 是否将label写入文件
@@ -76,7 +73,6 @@ if not isTestMode:
 
     trainLogWriter = tf.summary.FileWriter(trainLogPath, sess.graph)
     valLogWriter = tf.summary.FileWriter(valLogPath, sess.graph)
-
 
     for step in range(trainingIterations + 1):
 
@@ -131,16 +127,17 @@ else:
         valReallyTxtFile = open(valReallyTxtPath, 'wb')
 
     for step in range(valIterations + 1):
-        X, Y = []  # data.getNextAutoShuffleBatch(valBatchSize)
 
+        valX, valY = sess.run([val_x_batch, val_y_batch])
+        valX = np.reshape(valX, newshape=(-1, 72000))
 
-        valAccuracy = sess.run(valPbAccuracy, feed_dict={valPbLstmInput: X, valPbLabel: Y})
+        valPbAccuracy = sess.run(valPbAccuracy, feed_dict={lstmInput: valX, Label: valY})
+        print('step:%d,  valAccuracy:%f' % (step, valPbAccuracy))
+
         if isWriteFlag:
-            np.savetxt(valReallyTxtFile, Y)
+            np.savetxt(valReallyTxtFile, valY)
             np.savetxt(valPredictionTxtFile,
-                       sess.run(valPbPredictionLabels, feed_dict={valPbLstmInput: X, valPbLabel: Y}))
-
-        print('valAccuracy:%f' % (valAccuracy))
+                       sess.run(valPbPredictionLabels, feed_dict={lstmInput: valX, Label: valY}))
 
     if isWriteFlag:
         valPredictionTxtFile.close()

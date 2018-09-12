@@ -3,11 +3,8 @@ import random
 import numpy as np
 import pandas as pd
 
-<<<<<<< HEAD
 from Util.WriteHd5Util import writeToH5
-=======
-from Util.WriteHd5Util import write
->>>>>>> c7c16b06acb9e61b60dd9bfbe34bf7628c81935b
+
 
 
 def convertY(y_list):
@@ -19,15 +16,7 @@ def convertY(y_list):
     return yCoverted
 
 
-<<<<<<< HEAD
 
-=======
-class bean:
-
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
->>>>>>> c7c16b06acb9e61b60dd9bfbe34bf7628c81935b
 
 
 def load(path, path2):
@@ -51,11 +40,9 @@ def load(path, path2):
         data.append(b)
 
     random.shuffle(data)
-<<<<<<< HEAD
+
     writeToH5(data, path2)
-=======
-    write(data, path2)
->>>>>>> c7c16b06acb9e61b60dd9bfbe34bf7628c81935b
+
 
     return (final_x, y)
 
@@ -79,7 +66,6 @@ def open():
 
 
 # load('F:\csi\openh5\\open_val.h5','open_val_sf.h5')
-<<<<<<< HEAD
-=======
-open()
->>>>>>> c7c16b06acb9e61b60dd9bfbe34bf7628c81935b
+
+#open()
+
