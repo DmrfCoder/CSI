@@ -85,6 +85,7 @@ DeepCount discards the first principal component h 1 and retains the next ten pr
 
 > 使用weight moving等算法对原始数据进行处理，得到净数据
 
+<<<<<<< HEAD
 2:Normalize(已经在上一步进行了归一化处理)
 
 > 对净数据进行归一化处理
@@ -93,6 +94,12 @@ DeepCount discards the first principal component h 1 and retains the next ten pr
 经过以上两步处理得到fixed、open、semi三个文件夹下的数据文件夹，每个数据文件夹下的数据都是N×360的且已经做过归一化处理
 
 
+=======
+2:Normalize
+
+> 对净数据进行归一化处理
+
+>>>>>>> c7c16b06acb9e61b60dd9bfbe34bf7628c81935b
 2: Split
 
 > 对归一化之后的数据进行切片,将切片后的数据进行shuffle存储成h5文件

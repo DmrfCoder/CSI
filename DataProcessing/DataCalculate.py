@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 # -*-coding:utf-8-*-
+=======
+>>>>>>> c7c16b06acb9e61b60dd9bfbe34bf7628c81935b
 from DataProcessing.CsiToAmplitudeAndPhase import getAmplitudesAndPhases
 from DataProcessing.PhaseSanitization import PhaseSanitization
 from DataProcessing.WeightedMovingAverage import weightMoveAverage

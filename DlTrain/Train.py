@@ -6,11 +6,13 @@ import numpy as np
 from DlTrain.CNN import CNN
 from DlTrain.Data import Data
 from DlTrain.LSTM import LSTM
+
 from DlTrain.Parameters import lstmTimeStep, lstmInputDimension, baseIr, valIterations, \
     trainBatchSize, trainReallyTxtPath, trainingIterations, trainPredictionTxtPath, valBatchSize, \
     valPredictionTxtPath, valReallyTxtPath, pbPath, accuracyFilePath, maxAccuracyFilePath, valPerTrainIterations, \
     trainLogPath, valLogPath, val_tf_path, train_tf_path
 from Util.ReadAndDecodeUtil import read_and_decode
+
 
 lstmInput = tf.placeholder(tf.float32, shape=[None, lstmTimeStep * lstmInputDimension], name='inputLstm')
 Label = tf.placeholder(tf.int32, shape=[None, ], name='Label')
@@ -34,6 +36,7 @@ correctPrediction = tf.equal(predictionLabels, Label)
 with tf.name_scope('Accuracy'):
     Accuracy = tf.reduce_mean(tf.cast(correctPrediction, tf.float32))
     tf.summary.scalar('Accuracy', Accuracy)
+
 
 x_train, y_train = read_and_decode(train_tf_path)
 num_threads = 3
@@ -61,6 +64,7 @@ sess = tf.InteractiveSession()
 sess.run(tf.global_variables_initializer())
 threads = tf.train.start_queue_runners(sess=sess)
 
+
 isTestMode = False  # 是否是验证阶段
 isTestCode = False  # 是否是测试代码模式（产生随机数据）
 
@@ -73,6 +77,7 @@ if not isTestMode:
     trainLogWriter = tf.summary.FileWriter(trainLogPath, sess.graph)
     valLogWriter = tf.summary.FileWriter(valLogPath, sess.graph)
 
+
     for step in range(trainingIterations + 1):
 
         # X, Y = trainData.getNextManualShuffleBatch(trainBatchSize)
@@ -83,6 +88,7 @@ if not isTestMode:
         if step % valPerTrainIterations == 0:
             valX, valY = sess.run([val_x_batch, val_y_batch])
             valX = np.reshape(valX, newshape=(-1, 72000))
+
             valLoss, valAccuracy = sess.run([loss, Accuracy], feed_dict={lstmInput: valX, Label: valY})
             print('step:%d, valLoss:%f, valAccuracy:%f' % (step, valLoss, valAccuracy))
             valSummary, _ = sess.run([merged, trainOp], feed_dict={lstmInput: X, Label: Y})
@@ -126,6 +132,7 @@ else:
 
     for step in range(valIterations + 1):
         X, Y = []  # data.getNextAutoShuffleBatch(valBatchSize)
+
 
         valAccuracy = sess.run(valPbAccuracy, feed_dict={valPbLstmInput: X, valPbLabel: Y})
         if isWriteFlag:
