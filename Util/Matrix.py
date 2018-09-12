@@ -12,9 +12,27 @@ label= [0, 1, 2, 3, 4]
 #y_true = np.loadtxt('../Data/pc_re_label.txt')
 #y_pred = np.loadtxt('../Data/pc_pr_label_tf.txt')
 
-which='Open'
-a = np.loadtxt('../Data/' + which + '/valReallyLabel.txt')
-b = np.loadtxt('../Data/' + which + '/valPredictionLabel.txt')
+which='Semi'
+reallyTxtPath='../Data/' + which + '/valReallyLabel.txt'
+predictionTxtPath='../Data/' + which + '/valPredictionLabel.txt'
+
+#a = np.loadtxt(reallyTxtPath)
+#b = np.loadtxt(predictionTxtPath)
+
+a = []
+b = []
+
+
+with open(reallyTxtPath, 'r') as f:
+    for line in f:
+        data = line.split()
+        a.append(int(data[0][0]))
+
+
+with open(predictionTxtPath, 'r') as f:
+    for line in f:
+        data = line.split()
+        b.append(int(data[0][0]))
 
 
 y_true=a

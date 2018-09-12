@@ -62,7 +62,7 @@ sess = tf.InteractiveSession()
 sess.run(tf.global_variables_initializer())
 threads = tf.train.start_queue_runners(sess=sess)
 
-isTestMode = True  # 是否是验证阶段
+isTestMode = False  # 是否是验证阶段
 isTestCode = False  # 是否是测试代码模式（产生随机数据）
 
 isWriteFlag = True  # 是否将label写入文件
@@ -74,6 +74,10 @@ if not isTestMode:
     trainLogWriter = tf.summary.FileWriter(trainLogPath, sess.graph)
     valLogWriter = tf.summary.FileWriter(valLogPath, sess.graph)
 
+    if isWriteFlag:
+        valPredictionTxtFile = open(valPredictionTxtPath, 'wb')
+        valReallyTxtFile = open(valReallyTxtPath, 'wb')
+
     for step in range(trainingIterations + 1):
 
         # X, Y = trainData.getNextManualShuffleBatch(trainBatchSize)
@@ -84,6 +88,15 @@ if not isTestMode:
         if step % valPerTrainIterations == 0:
             valX, valY = sess.run([val_x_batch, val_y_batch])
             valX = np.reshape(valX, newshape=(-1, 72000))
+
+            out_labels = sess.run(predictionLabels, feed_dict={lstmInput: valX, Label: valY})
+
+            for i in range(valBatchSize):
+                print 'really:%d prediction:%d' % (valY[i], out_labels[i])
+
+            if isWriteFlag:
+                np.savetxt(valReallyTxtFile, valY)
+                np.savetxt(valPredictionTxtFile, out_labels)
 
             valLoss, valAccuracy = sess.run([loss, Accuracy], feed_dict={lstmInput: valX, Label: valY})
             print('step:%d, valLoss:%f, valAccuracy:%f' % (step, valLoss, valAccuracy))
