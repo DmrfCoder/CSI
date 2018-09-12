@@ -6,10 +6,11 @@ import numpy as np
 from DlTrain.CNN import CNN
 from DlTrain.Data import Data
 from DlTrain.LSTM import LSTM
-from DlTrain.Parameters import lstmTimeStep, lstmInputDimension, baseIr, valIterations, trainHd5Path, \
-    trainBatchSize, trainReallyTxtPath, trainingIterations, trainPredictionTxtPath, valHd5Path, valBatchSize, \
+from DlTrain.Parameters import lstmTimeStep, lstmInputDimension, baseIr, valIterations, \
+    trainBatchSize, trainReallyTxtPath, trainingIterations, trainPredictionTxtPath, valBatchSize, \
     valPredictionTxtPath, valReallyTxtPath, pbPath, accuracyFilePath, maxAccuracyFilePath, valPerTrainIterations, \
-    trainLogPath, valLogPath
+    trainLogPath, valLogPath, val_tf_path, train_tf_path
+from Util.ReadAndDecodeUtil import read_and_decode
 
 lstmInput = tf.placeholder(tf.float32, shape=[None, lstmTimeStep * lstmInputDimension], name='inputLstm')
 Label = tf.placeholder(tf.int32, shape=[None, ], name='Label')
@@ -34,10 +35,31 @@ with tf.name_scope('Accuracy'):
     Accuracy = tf.reduce_mean(tf.cast(correctPrediction, tf.float32))
     tf.summary.scalar('Accuracy', Accuracy)
 
+x_train, y_train = read_and_decode(train_tf_path)
+num_threads = 3
+min_after_dequeue_train = 10000
+
+train_capacity_train = min_after_dequeue_train + num_threads * trainBatchSize
+
+# 使用shuffle_batch可以随机打乱输入
+train_x_batch, train_y_batch = tf.train.shuffle_batch([x_train, y_train],
+                                                      batch_size=trainBatchSize, capacity=train_capacity_train,
+                                                      min_after_dequeue=min_after_dequeue_train)
+
+x_val, y_val = read_and_decode(val_tf_path)
+num_threads = 3
+min_after_dequeue_val = 2500
+
+train_capacity_val = min_after_dequeue_val + num_threads * trainBatchSize
+
+# 使用shuffle_batch可以随机打乱输入
+val_x_batch, val_y_batch = tf.train.shuffle_batch([x_val, y_val],
+                                                  batch_size=valBatchSize, capacity=train_capacity_val,
+                                                  min_after_dequeue=min_after_dequeue_val)
+
 sess = tf.InteractiveSession()
 sess.run(tf.global_variables_initializer())
-
-
+threads = tf.train.start_queue_runners(sess=sess)
 
 isTestMode = False  # 是否是验证阶段
 isTestCode = False  # 是否是测试代码模式（产生随机数据）
@@ -51,16 +73,16 @@ if not isTestMode:
     trainLogWriter = tf.summary.FileWriter(trainLogPath, sess.graph)
     valLogWriter = tf.summary.FileWriter(valLogPath, sess.graph)
 
-    trainData = Data(trainHd5Path, isTestCode)
-    valDdata = Data(valHd5Path, isTestCode)
-
     for step in range(trainingIterations + 1):
 
-        X, Y = trainData.getNextManualShuffleBatch(trainBatchSize)
+        # X, Y = trainData.getNextManualShuffleBatch(trainBatchSize)
+        X, Y = sess.run([train_x_batch, train_y_batch])
+        X = np.reshape(X, newshape=(-1, 72000))
 
         sess.run(trainOp, feed_dict={lstmInput: X, Label: Y})
         if step % valPerTrainIterations == 0:
-            valX, valY = valDdata.getNextManualShuffleBatch(valBatchSize)
+            valX, valY = sess.run([val_x_batch, val_y_batch])
+            valX = np.reshape(valX, newshape=(-1, 72000))
             valLoss, valAccuracy = sess.run([loss, Accuracy], feed_dict={lstmInput: valX, Label: valY})
             print('step:%d, valLoss:%f, valAccuracy:%f' % (step, valLoss, valAccuracy))
             valSummary, _ = sess.run([merged, trainOp], feed_dict={lstmInput: X, Label: Y})
@@ -71,12 +93,14 @@ if not isTestMode:
 
     constant_graph = tf.graph_util.convert_variables_to_constants(sess, sess.graph_def, ["PredictionLabels"])
 
-    with tf.gfile.FastGFile(pbPath, mode='wb') as f:
-        f.write(constant_graph.SerializeToString())
-
     if not isTestCode:
         trainLogWriter.close()
         valLogWriter.close()
+
+    with tf.gfile.FastGFile(pbPath, mode='wb') as f:
+        f.write(constant_graph.SerializeToString())
+
+
 
 
 else:
@@ -100,10 +124,8 @@ else:
         valPredictionTxtFile = open(valPredictionTxtPath, 'wb')
         valReallyTxtFile = open(valReallyTxtPath, 'wb')
 
-    data = Data(valHd5Path, isTestCode)
-
     for step in range(valIterations + 1):
-        X, Y = data.getNextAutoShuffleBatch(valBatchSize)
+        X, Y = []  # data.getNextAutoShuffleBatch(valBatchSize)
 
         valAccuracy = sess.run(valPbAccuracy, feed_dict={valPbLstmInput: X, valPbLabel: Y})
         if isWriteFlag:

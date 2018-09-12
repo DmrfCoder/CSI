@@ -1,3 +1,4 @@
+#coding:utf-8
 import tensorflow as tf
 
 from DlTrain.Parameters import trainBatchSize, lstmTimeStep, lstmHiddenUnits, classes

@@ -3,7 +3,7 @@ import random
 import numpy as np
 import pandas as pd
 
-from Util.WriteHd5Util import write
+from Util.WriteHd5Util import writeToH5
 
 
 def convertY(y_list):
@@ -15,11 +15,7 @@ def convertY(y_list):
     return yCoverted
 
 
-class bean:
 
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
 
 
 def load(path, path2):
@@ -43,7 +39,7 @@ def load(path, path2):
         data.append(b)
 
     random.shuffle(data)
-    write(data, path2)
+    writeToH5(data, path2)
 
     return (final_x, y)
 
@@ -67,4 +63,3 @@ def open():
 
 
 # load('F:\csi\openh5\\open_val.h5','open_val_sf.h5')
-open()
