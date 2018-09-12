@@ -80,5 +80,5 @@ plt.gcf().subplots_adjust(bottom=0.15)
 
 plot_confusion_matrix(cm_normalized, title='Normalized confusion matrix')
 # show confusion matrix
-plt.savefig('../Data/confusion_matrix_val.png', format='png')
+plt.savefig('../Data/'+which+'_confusion_matrix_val.png', format='png')
 plt.show()
