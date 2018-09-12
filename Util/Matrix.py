@@ -12,7 +12,7 @@ label= [0, 1, 2, 3, 4]
 #y_true = np.loadtxt('../Data/pc_re_label.txt')
 #y_pred = np.loadtxt('../Data/pc_pr_label_tf.txt')
 
-which='Open'
+which='Fixed'
 reallyTxtPath='../Data/' + which + '/valReallyLabel.txt'
 predictionTxtPath='../Data/' + which + '/valPredictionLabel.txt'
 
