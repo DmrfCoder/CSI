@@ -21,7 +21,7 @@ valBatchSize = trainBatchSize
 trainingIterations = 3000  # 训练迭代次数
 valIterations = 100
 
-baseIr = 0.1
+baseIr = 0.01
 
 valPerTrainIterations = 4
 
@@ -29,7 +29,7 @@ valPerTrainIterations = 4
 IO
 '''
 # Log path
-which = "Fixed"
+which = "Open"
 
 trainLogPath = '../Log/' + which + '/train/'
 valLogPath = '../Log/' + which + '/val/'
