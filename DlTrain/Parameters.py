@@ -29,7 +29,7 @@ valPerTrainIterations = 4
 IO
 '''
 # Log path
-which = "Open"
+which = "Semi"
 
 trainLogPath = '../Log/' + which + '/train/'
 valLogPath = '../Log/' + which + '/val/'

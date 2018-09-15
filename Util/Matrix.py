@@ -12,7 +12,7 @@ label= [0,1, 2, 3, 4]
 #y_true = np.loadtxt('../Data/pc_re_label.txt')
 #y_pred = np.loadtxt('../Data/pc_pr_label_tf.txt')
 
-which='Open'
+which='Semi'
 reallyTxtPath='../Data/' + which + '/valReallyLabel.txt'
 predictionTxtPath='../Data/' + which + '/valPredictionLabel.txt'
 
@@ -68,9 +68,9 @@ for x_val, y_val in zip(x.flatten(), y.flatten()):
     c = cm_normalized[y_val][x_val]
     if c > 0.01:
         if c>0.5:
-            plt.text(x_val, y_val, "%0.2f" % (c,), color='white', fontsize=14, va='center', ha='center')
+            plt.text(x_val, y_val, "%0.2f" % (c,), color='white', fontsize=35, va='center', ha='center')
         else:
-            plt.text(x_val, y_val, "%0.2f" % (c,), color='black', fontsize=14, va='center', ha='center')
+            plt.text(x_val, y_val, "%0.2f" % (c,), color='black', fontsize=35, va='center', ha='center')
 
 
 
@@ -87,8 +87,8 @@ plt.grid(True, which='minor', linestyle='-')
 plt.gcf().subplots_adjust(bottom=0.15)
 
 labels=[1,2,3,4,5]
-plt.xticks(tick_marks-0.5, labels)
-plt.yticks(tick_marks-0.5, labels)
+plt.xticks(tick_marks-0.5, labels,fontsize=35)
+plt.yticks(tick_marks-0.5, labels,fontsize=35)
 
 
 
