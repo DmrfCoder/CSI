@@ -21,7 +21,7 @@ valBatchSize = trainBatchSize
 trainingIterations = 10000  # 训练迭代次数
 valIterations = 100
 
-baseIr = 0.15
+baseIr = 0.1
 
 valPerTrainIterations = 4
 
