@@ -78,7 +78,6 @@ for x_val, y_val in zip(x.flatten(), y.flatten()):
 
 
 tick_marks = np.array(range(5)) + 0.5
-
 plt.gca().set_xticks(tick_marks, minor=True)
 plt.gca().set_yticks(tick_marks, minor=True)
 plt.gca().xaxis.set_ticks_position('none')
@@ -94,5 +93,5 @@ plt.yticks(tick_marks-0.5, labels,fontsize=35)
 
 plot_confusion_matrix(cm_normalized)
 # show confusion matrix
-plt.savefig('../Data/'+which+'_confusion_matrix_val.png', format='png')
+plt.savefig('../Data/'+which+'_confusion_matrix_val.png', format='png',dip=(420,317))
 plt.show()
