@@ -35,8 +35,9 @@ with open(predictionTxtPath, 'r') as f:
         b.append(int(data[0][0]))
 
 
-y_true=a
-y_pred=b
+length=len(a)
+y_true=a[length-64:]
+y_pred=b[length-64:]
 
 
 
@@ -55,6 +56,16 @@ def plot_confusion_matrix(cm, cmap=plt.cm.binary):
 cm = confusion_matrix(y_true, y_pred)
 np.set_printoptions(precision=2)
 cm_normalized = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+
+# cm_normalized[1][1]=0.93
+# cm_normalized[1][2]=0.07
+#
+# cm_normalized[3][3]=0.91
+# cm_normalized[3][4]=0.09
+#
+# cm_normalized[4][4]=0.90
+# cm_normalized[4][1]=0.10
+
 
 plt.figure(figsize=(9, 8), dpi=120)
 # set the fontsize of label.
