@@ -94,13 +94,14 @@ DeepCount discards the first principal component h 1 and retains the next ten pr
 经过以上两步处理得到fixed、open、semi三个文件夹下的数据文件夹，每个数据文件夹下的数据都是N×360的且已经做过归一化处理
 
 
-=======
-2:Normalize
 
-> 对净数据进行归一化处理
+## 500
+open：11967-2970
+fixed：
+semi：19806-4915
+## 1000
+open：
+fixed：
+semi：
 
->>>>>>> c7c16b06acb9e61b60dd9bfbe34bf7628c81935b
-2: Split
-
-> 对归一化之后的数据进行切片,将切片后的数据进行shuffle存储成h5文件
 

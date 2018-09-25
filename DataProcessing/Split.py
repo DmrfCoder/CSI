@@ -73,6 +73,9 @@ def SplitProcess(sourcePath, targetPath, fragmentLength=200):
     writer_train = tf.python_io.TFRecordWriter(targetPath + '/' + 'train.tfrecords')
     writer_val = tf.python_io.TFRecordWriter(targetPath + '/' + 'val.tfrecords')
 
+    traincount=0
+    valcount=0
+
     for file in files:
         print file
         data = scio.loadmat(sourcePath + '/' + file)
@@ -94,16 +97,23 @@ def SplitProcess(sourcePath, targetPath, fragmentLength=200):
             }))
 
             if i <= trainindex:
+                traincount+=1
                 writer_train.write(example.SerializeToString())
             else:
+                valcount+=1
                 writer_val.write(example.SerializeToString())
 
     writer_train.close()
     writer_val.close()
 
+    print sourcePath+'-traincount: '+str( traincount)
+    print sourcePath+'-valcount: '+str(valcount)
+
+
 
 if __name__ == '__main__':
+    fragmentLength=1000
     fixed_path = '/data/after-dataprocess/fixed/'
-    fixed_hd_target = '/data/after-split200/fixed'
+    fixed_hd_target = '/data/after-split'+str(fragmentLength)+'/Fixed'
 
-    SplitProcess(fixed_path, fixed_hd_target, 200)
+    SplitProcess(fixed_path, fixed_hd_target, fragmentLength=fragmentLength)

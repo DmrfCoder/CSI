@@ -1,10 +1,13 @@
 # coding:utf-8
 
+
+fragmentLength=1000
+
 """
 LSTM
 """
 
-lstmTimeStep = 200
+lstmTimeStep = 1000
 lstmHiddenUnits = 64
 lstmLayerNum = 1
 lstmInputDimension = 360
@@ -29,7 +32,7 @@ valPerTrainIterations = 4
 IO
 '''
 # Log path
-which = "Fixed"
+which = "Open"
 
 trainLogPath = '../Log/' + which + '/train/'
 valLogPath = '../Log/' + which + '/val/'
@@ -44,5 +47,7 @@ trainReallyTxtPath = '../Data/' + which + '/trainReallyLabel.txt'
 valPredictionTxtPath = '../Data/' + which + '/valPredictionLabel.txt'
 valReallyTxtPath = '../Data/' + which + '/valReallyLabel.txt'
 
-train_tf_path = '/data/after-split200/' + which + '/train.tfrecords'
-val_tf_path = '/data/after-split200/' + which + '/val.tfrecords'
+
+
+train_tf_path = '/data/after-split'+str(fragmentLength)+'/' + which + '/train.tfrecords'
+val_tf_path = '/data/after-split'+str(fragmentLength)+'/' + which + '/val.tfrecords'
