@@ -1,7 +1,7 @@
-.idea
-Data
-Model
-EResult
-ExperientalRecord
-Log
-venv
+.idea/
+Data/
+Model/
+EResult/
+ExperientalRecord/
+Log/
+venv/
