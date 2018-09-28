@@ -4,6 +4,7 @@ import numpy as np
 
 
 def Normalize(data):
+
     mx = max(data)
     mn = min(data)
 
@@ -32,8 +33,3 @@ def NormalizeFiles(path, target_path):
                      {'x': x, 'y': y})
 
 
-if __name__ == '__main__':
-    path = 'E:\\yczhao Data\\AfterDataProcessData\\fixed'
-    target_path = 'F:\\csi\\AfterNormalizeData\\fixed\\'
-
-    NormalizeFiles(path, target_path)
