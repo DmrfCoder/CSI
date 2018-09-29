@@ -102,19 +102,12 @@ Input:32_10_10(flat to 3200*1)
 
 在两个方面做两组对比实验：
 
-- Only Amplitude
-
-- Only Phase
-
-- Both Amplitude and Phase
-
-- Amplitude and Phase but without Amplitude noise removal
-
-- Amplitude and Phase but without Phase noise removal
-
-- Both Amplitude and Phase with noise removal
-
-- Both Amplitude and Phase without noise removal
+- Only Amplitude(Without P)
+- Only Phase(Without A)
+- Without Amplitude noise removal  but with Phase noise removal(Without A)
+- With Amplitude noise removal  but without Phase noise removal(Without P)
+- Amplitude with noise removal and Phase with noise removal(With P*A)
+- Amplitude without noise removal and Phase without noise removal(Raw Data)
 
 
 基于此，数据集应有如下几种：
