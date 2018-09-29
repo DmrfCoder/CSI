@@ -1,7 +1,7 @@
 # coding:utf-8
+from DlTrain.Train import train
 
-
-fragmentLength=1000
+fragmentLength = 1000
 
 """
 LSTM
@@ -31,23 +31,29 @@ valPerTrainIterations = 4
 '''
 IO
 '''
+
+rootType = ['AmplitudeWithout_PhaseWith', 'AmplitudeWithOut_PhaseWithout', 'AmplitudeWith_PhaseWith',
+            'AmplitudeWith_PhaseWithout', 'OnlyAmplitude', 'OnlyPhase']
+
 # Log path
-which = "Open"
 
-trainLogPath = '../Log/' + which + '/train/'
-valLogPath = '../Log/' + which + '/val/'
+logRoot = '/media/xue/Data Storage/CSI/Train/Log'
 
-pbPath = '../Model/' + which + '.pb'
+# pb path
+pbRoot = '/media/xue/Data Storage/CSI/Train/Model'
 
-accuracyFilePath = '../Data/' + which + '/Accuracy.txt'
-maxAccuracyFilePath = '../Data/' + which + '/maxAccuracy.txt'
-trainPredictionTxtPath = '../Data/' + which + '/trainPredictionLabel.txt'
-trainReallyTxtPath = '../Data/' + which + '/trainReallyLabel.txt'
+# matrix path
 
-valPredictionTxtPath = '../Data/' + which + '/valPredictionLabel.txt'
-valReallyTxtPath = '../Data/' + which + '/valReallyLabel.txt'
+matrixRoot = '/media/xue/Data Storage/CSI/Train/ConfusionMatrix'
 
+tfRootPath = '/media/xue/Data Storage/CSI/TfRecordsData/'
 
-
-train_tf_path = '/data/after-split'+str(fragmentLength)+'/' + which + '/train.tfrecords'
-val_tf_path = '/data/after-split'+str(fragmentLength)+'/' + which + '/val.tfrecords'
+for i in range(6):
+    if i < 5:
+        train(rootType=rootType[i], which='fixed', baseIr=0.2)
+        train(rootType=rootType[i], which='open', baseIr=0.15)
+        train(rootType=rootType[i], which='semi', baseIr=0.1)
+    else:
+        train(rootType=rootType[i], which='fixed', baseIr=0.2, InputDimension=180)
+        train(rootType=rootType[i], which='open', baseIr=0.15, InputDimension=180)
+        train(rootType=rootType[i], which='semi', baseIr=0.1, InputDimension=180)
