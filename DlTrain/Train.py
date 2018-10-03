@@ -16,7 +16,9 @@ from Util.Matrix import drawMatrix
 from Util.ReadAndDecodeUtil import read_and_decode
 
 
-def train(baseIr, rootType, which, InputDimension=lstmInputDimension):
+
+
+def trainauto(baseIr, rootType, which, InputDimension=lstmInputDimension):
     train_tf_path = tfRootPath + rootType + '/' + which + '/train.tfrecords'
     val_tf_path = tfRootPath + rootType + '/' + which + '/val.tfrecords'
 
@@ -30,10 +32,6 @@ def train(baseIr, rootType, which, InputDimension=lstmInputDimension):
     with tf.name_scope('baseIr'):
         tf.summary.scalar('baseIr', baseIr)  # 写入tensorboard中的EVENTS
 
-    opt=tf.train.GradientDescentOptimizer(learning_rate=baseIr)
-
-    tower_grads=[]
-    num_gpus=2
 
 
 
@@ -190,8 +188,6 @@ def train(baseIr, rootType, which, InputDimension=lstmInputDimension):
 
                 out_labels = sess.run(predictionLabels, feed_dict={lstmInput: valX, Label: valY})
 
-                for i in range(valBatchSize):
-                    print 'really:%d prediction:%d' % (valY[i], out_labels[i])
 
                 if isWriteFlag:
                     np.savetxt(valReallyTxtFile, valY)
@@ -263,3 +259,17 @@ def train(baseIr, rootType, which, InputDimension=lstmInputDimension):
             valReallyTxtFile.close()
 
         sess.close()
+
+
+
+rootType = ['AmplitudeWithout_PhaseWith', 'AmplitudeWithOut_PhaseWithout', 'AmplitudeWith_PhaseWith',
+            'AmplitudeWith_PhaseWithout', 'OnlyAmplitude', 'OnlyPhase']
+for i in range(6):
+    if i < 5:
+        trainauto(rootType=rootType[i], which='fixed', baseIr=0.2)
+        trainauto(rootType=rootType[i], which='open', baseIr=0.15)
+        trainauto(rootType=rootType[i], which='semi', baseIr=0.1)
+    else:
+        trainauto(rootType=rootType[i], which='fixed', baseIr=0.2, InputDimension=180)
+        trainauto(rootType=rootType[i], which='open', baseIr=0.15, InputDimension=180)
+        trainauto(rootType=rootType[i], which='semi', baseIr=0.1, InputDimension=180)

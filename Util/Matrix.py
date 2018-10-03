@@ -54,8 +54,7 @@ def drawMatrix(reallyTxtPath, predictionTxtPath, matrixPath):
     plt.xticks(tick_marks - 0.5, labels, fontsize=35)
     plt.yticks(tick_marks - 0.5, labels, fontsize=35)
 
-    plot_confusion_matrix(cm_normalized)
-    plt.imshow(cm, interpolation='nearest', cmap=plt.cm.binary)
+    plt.imshow(cm_normalized, interpolation='nearest', cmap=plt.cm.binary)
     # show confusion matrix
     plt.savefig(matrixPath, format='png', dip=(420, 317))
     plt.show()
