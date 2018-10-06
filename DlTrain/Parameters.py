@@ -1,5 +1,6 @@
 # coding:utf-8
 
+
 fragmentLength = 1000
 
 """
@@ -45,5 +46,4 @@ pbRoot = '/media/xue/Data Storage/CSI/Train/Model'
 matrixRoot = '/media/xue/Data Storage/CSI/Train/ConfusionMatrix'
 
 tfRootPath = '/media/xue/Data Storage/CSI/TfRecordsData/'
-
 

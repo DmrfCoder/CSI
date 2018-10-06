@@ -4,25 +4,28 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 label = [0, 1, 2, 3, 4]
+label2 = [4, 3, 2, 1, 0]
 
 
 def drawMatrix(reallyTxtPath, predictionTxtPath, matrixPath):
     a = []
     b = []
 
-    with open(reallyTxtPath, 'r') as f:
-        for line in f:
-            data = line.split()
-            a.append(int(data[0][0]))
+    y_true = np.loadtxt(reallyTxtPath)
+    y_pred = np.loadtxt(predictionTxtPath)
 
-    with open(predictionTxtPath, 'r') as f:
-        for line in f:
-            data = line.split()
-            b.append(int(data[0][0]))
+    # with open(reallyTxtPath, 'r') as f:
+    #     for line in f:
+    #         data = line.split()
+    #         a.append(int(data[0][0]))
+    #
+    # with open(predictionTxtPath, 'r') as f:
+    #     for line in f:
+    #         data = line.split()
+    #         b.append(int(data[0][0]))
 
-    length = len(a)
-    y_true = a
-    y_pred = b
+    y_true=np.append(y_true, label)
+    y_pred=np.append(y_pred, label)
 
     cm = confusion_matrix(y_true, y_pred)
     np.set_printoptions(precision=2)
@@ -57,4 +60,7 @@ def drawMatrix(reallyTxtPath, predictionTxtPath, matrixPath):
     plt.imshow(cm_normalized, interpolation='nearest', cmap=plt.cm.binary)
     # show confusion matrix
     plt.savefig(matrixPath, format='png', dip=(420, 317))
-    plt.show()
+    plt.close()
+    #plt.show()
+
+
