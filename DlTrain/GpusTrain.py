@@ -13,8 +13,7 @@ from DlTrain.Parameters import lstmInputDimension, tfRootPath, logRoot, pbRoot, 
 from Util.Matrix import drawMatrix
 from Util.ReadAndDecodeUtil import read_and_decode
 
-
-os.environ['CUDA_VISIBLE_DEVICES']='0,1'
+os.environ['CUDA_VISIBLE_DEVICES'] = '0,1'
 
 
 def average_losses(loss):
@@ -66,7 +65,7 @@ def feed_all_gpu(inp_dict, models, payload_per_gpu, batch_x, batch_y):
         start_pos = i * payload_per_gpu
         stop_pos = (i + 1) * payload_per_gpu
         inp_dict[x] = batch_x[start_pos:stop_pos]
-        inp_dict[y] = batch_y[start_pos:stop_pos]
+        inp_dict[y] =np.reshape( batch_y[start_pos:stop_pos],newshape=(-1,1))
     return inp_dict
 
 
@@ -220,9 +219,6 @@ def multi_gpu(baseIr, rootType, which, InputDimension=lstmInputDimension, num_gp
                                                               batch_size=batch_size, capacity=train_capacity_val,
                                                               min_after_dequeue=min_after_dequeue_val)
 
-            init = tf.global_variables_initializer()
-            sess.run(init)
-
             coord = tf.train.Coordinator()
             threads = tf.train.start_queue_runners(sess=sess, coord=coord)
 
@@ -236,18 +232,12 @@ def multi_gpu(baseIr, rootType, which, InputDimension=lstmInputDimension, num_gp
             #         print 'start thread exception'
             #         break
 
-            merged = tf.summary.merge_all()
-
             trainPredictionFile = open(folders_dict['trainPredictionTxtPath'], 'wb')
             trainReallyTxtFile = open(folders_dict['trainReallyTxtPath'], 'wb')
 
-            trainLogWriter = tf.summary.FileWriter(folders_dict['trainLogPath'], sess.graph)
-            valLogWriter = tf.summary.FileWriter(folders_dict['valLogPath'], sess.graph)
 
-            with tf.name_scope('learning_rate'):
-                learning_rate = tf.placeholder(tf.float32, shape=[])
-                tf.summary.scalar('learning_rate', learning_rate)
 
+            learning_rate = tf.placeholder(tf.float32, shape=[])
             opt = tf.train.GradientDescentOptimizer(learning_rate=learning_rate)
 
             print('build model...')
@@ -261,7 +251,7 @@ def multi_gpu(baseIr, rootType, which, InputDimension=lstmInputDimension, num_gp
                         with tf.variable_scope('cpu_variables', reuse=gpu_id > 0):
                             x = tf.placeholder(tf.float32, shape=[None, lstmTimeStep * InputDimension],
                                                name='inputLstm')
-                            y = tf.placeholder(tf.int32, shape=[None, 5], name='Label')
+                            y = tf.placeholder(tf.int32, shape=[None, 1], name='Label')
 
                             cnnInput = LSTM(x)
                             pred = CNN(cnnInput)
@@ -284,25 +274,37 @@ def multi_gpu(baseIr, rootType, which, InputDimension=lstmInputDimension, num_gp
 
             apply_gradient_op = opt.apply_gradients(average_gradients(tower_grads))
 
-            all_y = tf.reshape(tf.stack(tower_y, 0), [-1, 5], 'all_y')
-            all_pred = tf.reshape(tf.stack(tower_preds, 0), [-1, 5], 'all_pred')
-            re_y = tf.argmax(all_y, 1, name='re_y')
-            pr_y = tf.argmax(all_pred, 1, name='pr_y')
+            all_y = tf.stack(tower_y, 0, 'all_y')
+            all_pred = tf.stack(tower_preds, 0, 'all_pred')
 
-            correct_pred = tf.equal(tf.argmax(all_y, 1), tf.argmax(all_pred, 1), 'correct_pred')
+
+
+            pr_y = tf.cast(tf.argmax(all_pred, 2), tf.int32, name='pr_y')
+            pr_y=tf.reshape(pr_y,(2,-1,1))
+
+
+            correctPrediction = tf.equal(pr_y, all_y)
+
+
 
             with tf.name_scope('Accuracy'):
-                accuracy = tf.reduce_mean(tf.cast(correct_pred, 'float'))
+                accuracy = tf.reduce_mean(tf.cast(correctPrediction, 'float'))
                 tf.summary.scalar('Accuracy', accuracy)
 
             print('reduce model on cpu done.')
 
             print('run train op...')
+
+            merged = tf.summary.merge_all()
+
+            trainLogWriter = tf.summary.FileWriter(folders_dict['trainLogPath'], sess.graph)
+            valLogWriter = tf.summary.FileWriter(folders_dict['valLogPath'], sess.graph)
+
             sess.run(tf.global_variables_initializer())
 
             start_time = time.time()
             payload_per_gpu = trainBatchSize
-            total_batch = int(trainingIterations/num_gpu)
+            total_batch = int(trainingIterations / num_gpu)
             avg_loss = 0.0
 
             inp_dict = {}
@@ -312,11 +314,13 @@ def multi_gpu(baseIr, rootType, which, InputDimension=lstmInputDimension, num_gp
                 batch_x, batch_y = sess.run([train_x_batch, train_y_batch])
                 batch_x = np.reshape(batch_x, newshape=(-1, 72000))
                 # batch_y=np.reshape(batch_y,newshape=(-1,1))
-                batch_y = openLabel(batch_y, batch_size)
+               # batch_y = openLabel(batch_y, batch_size)
                 inp_dict = feed_all_gpu(inp_dict, models, payload_per_gpu, batch_x, batch_y)
-                _, _loss = sess.run([apply_gradient_op, aver_loss_op], inp_dict)
+                _, _loss, train_merge = sess.run([apply_gradient_op, aver_loss_op, merged], inp_dict)
 
-                # trainLogWriter.add_summary(_merged, batch_idx)
+
+
+                trainLogWriter.add_summary(train_merge, batch_idx)
 
                 print('step: %d ,Train loss:%.4f' % (batch_idx, _loss))
                 avg_loss += _loss
@@ -324,28 +328,26 @@ def multi_gpu(baseIr, rootType, which, InputDimension=lstmInputDimension, num_gp
                 if batch_idx % valPerTrainIterations == 0:
                     batch_x, batch_y = sess.run([val_x_batch, val_y_batch])
                     batch_x = np.reshape(batch_x, newshape=(-1, 72000))
-                    batch_y = openLabel(batch_y, batch_size)
+                    #batch_y = openLabel(batch_y, batch_size)
                     inp_dict_val = feed_all_gpu({}, models, payload_per_gpu, batch_x, batch_y)
-                    batch_pred, batch_y = sess.run([all_pred, all_y], inp_dict_val)
 
-                    val_accuracy, _mergedval, reall_y, predic_y = sess.run([accuracy, merged, re_y, pr_y],
-                                                                           {all_y: batch_y, all_pred: batch_pred})
-                    print('Val Accuracy:                 %0.4f%%' % (100.0 * val_accuracy))
-                    np.savetxt(trainReallyTxtFile, reall_y)
-                    np.savetxt(trainPredictionFile, predic_y)
+                    batch_pred, batch_y ,acc= sess.run([pr_y, all_y,accuracy], inp_dict_val)
+                    batch_pred=np.reshape(batch_pred,newshape=(-1))
+                    batch_y=np.reshape(batch_y,newshape=(-1))
 
-                    valLogWriter.add_summary(_mergedval, batch_idx)
 
-                if batch_idx==10:
-                    break
 
+                    print('Val Accuracy:                 %0.4f%%' % (100.0 * acc))
+                    np.savetxt(trainReallyTxtFile, batch_y)
+                    np.savetxt(trainPredictionFile, batch_pred)
+
+                    #valLogWriter.add_summary(_mergedval, batch_idx)
 
             trainLogWriter.close()
             valLogWriter.close()
 
             trainReallyTxtFile.close()
             trainPredictionFile.close()
-
 
             constant_graph = tf.graph_util.convert_variables_to_constants(sess, sess.graph_def, ["correct_pred"])
             with tf.gfile.FastGFile(folders_dict['pbPath'], mode='wb') as f:
@@ -368,7 +370,7 @@ def multi_gpu(baseIr, rootType, which, InputDimension=lstmInputDimension, num_gp
 rootType = ['AmplitudeWithout_PhaseWith', 'AmplitudeWithOut_PhaseWithout', 'AmplitudeWith_PhaseWith',
             'AmplitudeWith_PhaseWithout', 'OnlyAmplitude', 'OnlyPhase']
 for i in range(6):
-    print str(i)+'....'
+    print str(i) + '....'
     if i < 5:
         multi_gpu(rootType=rootType[i], which='fixed', baseIr=0.2)
         multi_gpu(rootType=rootType[i], which='open', baseIr=0.15)

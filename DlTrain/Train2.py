@@ -15,8 +15,7 @@ from DlTrain.Parameters import lstmTimeStep, lstmInputDimension, valIterations, 
 
 from Util.Matrix import drawMatrix
 from Util.ReadAndDecodeUtil import read_and_decode
-
-os.environ['CUDA_VISIBLE_DEVICES']='0'
+os.environ['CUDA_VISIBLE_DEVICES']='0,1'
 
 def trainauto(baseIr, rootType, which, InputDimension=lstmInputDimension, gpu_code=0):
     tf.reset_default_graph()
@@ -124,7 +123,6 @@ def trainauto(baseIr, rootType, which, InputDimension=lstmInputDimension, gpu_co
                     valLogWriter.add_summary(valSummary, step)
 
 
-
                 trainSummary, _ = sess.run([merged, trainOp], feed_dict={lstmInput: X, Label: Y})
 
                 trainLogWriter.add_summary(trainSummary, step)
@@ -155,18 +153,19 @@ rootType = ['AmplitudeWithout_PhaseWith', 'AmplitudeWithOut_PhaseWithout', 'Ampl
             'AmplitudeWith_PhaseWithout', 'OnlyAmplitude', 'OnlyPhase']
 
 
+#
+#
+# trainauto(rootType=rootType[3], which='fixed', baseIr=0.2, gpu_code=0)
+# trainauto(rootType=rootType[3], which='open', baseIr=0.15, gpu_code=0)
+# trainauto(rootType=rootType[3], which='semi', baseIr=0.1, gpu_code=1)
 
-trainauto(rootType=rootType[0], which='fixed', baseIr=0.2, gpu_code=0)
-trainauto(rootType=rootType[0], which='open', baseIr=0.15, gpu_code=0)
-trainauto(rootType=rootType[0], which='semi', baseIr=0.1)
+trainauto(rootType=rootType[4], which='fixed', baseIr=0.2, InputDimension=180, gpu_code=1)
+trainauto(rootType=rootType[4], which='open', baseIr=0.15, InputDimension=180, gpu_code=1)
+trainauto(rootType=rootType[4], which='semi', baseIr=0.1, InputDimension=180, gpu_code=1)
 
-trainauto(rootType=rootType[1], which='fixed', baseIr=0.2, gpu_code=0)
-trainauto(rootType=rootType[1], which='open', baseIr=0.15, gpu_code=0)
-trainauto(rootType=rootType[1], which='semi', baseIr=0.1)
-
-trainauto(rootType=rootType[2], which='fixed', baseIr=0.2, gpu_code=0)
-trainauto(rootType=rootType[2], which='open', baseIr=0.15, gpu_code=0)
-trainauto(rootType=rootType[2], which='semi', baseIr=0.1)
+trainauto(rootType=rootType[5], which='fixed', baseIr=0.2, InputDimension=180, gpu_code=1)
+trainauto(rootType=rootType[5], which='open', baseIr=0.15, InputDimension=180, gpu_code=1)
+trainauto(rootType=rootType[5], which='semi', baseIr=0.1, InputDimension=180, gpu_code=1)
 
 
 

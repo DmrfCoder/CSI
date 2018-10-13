@@ -1,12 +1,12 @@
 import tensorflow as tf
 from tensorflow.contrib import rnn
 
-from DlTrain.Parameters import lstmTimeStep, lstmInputDimension, lstmHiddenUnits, lstmLayerNum, trainBatchSize
+from DlTrain.Parameters import lstmTimeStep, lstmHiddenUnits, lstmLayerNum, trainBatchSize
 
 initializer = tf.contrib.layers.xavier_initializer()
 
 
-def LSTM(x):
+def LSTM(x,lstmInputDimension):
     x = tf.reshape(x, [-1, lstmTimeStep, lstmInputDimension])
 
     lstm_cell = rnn.BasicLSTMCell(num_units=lstmHiddenUnits, forget_bias=1.0, state_is_tuple=True)
